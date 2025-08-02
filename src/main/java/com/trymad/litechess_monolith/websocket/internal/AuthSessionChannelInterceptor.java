@@ -1,16 +1,13 @@
 package com.trymad.litechess_monolith.websocket.internal;
 
-import java.security.Principal;
-
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -29,17 +26,20 @@ public class AuthSessionChannelInterceptor implements ChannelInterceptor {
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
-		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+		StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+
 		if(accessor.getCommand() == StompCommand.CONNECT) {
-			final String bearerToken = 
-				accessor.getNativeHeader("Authorization").getFirst().substring(7);
-			final Jwt jwt = jwtDecoder.decode(bearerToken);
-			final Authentication authentication = authenticationManager.authenticate(new JwtAuthenticationToken(jwt));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			accessor.getSessionAttributes().put("user", authentication);
+			try {
+				final String bearerToken = 
+					accessor.getNativeHeader("Authorization").getFirst().substring(7);
+				final Jwt jwt = jwtDecoder.decode(bearerToken);
+				final Authentication authentication = authenticationManager.authenticate(new JwtAuthenticationToken(jwt));
+				accessor.setUser(authentication);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
-		accessor.setUser( (Principal) accessor.getSessionAttributes().get("user"));
-		return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
+		return message;
 	}
 }
