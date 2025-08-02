@@ -8,6 +8,8 @@ public class LitechessMonolithApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LitechessMonolithApplication.class, args);
+
 	}
+
 
 }
