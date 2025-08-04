@@ -2,6 +2,7 @@ package com.trymad.litechess_monolith;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.modulith.core.ApplicationModules;
 
 @SpringBootTest
 class LitechessMonolithApplicationTests {
@@ -10,4 +11,9 @@ class LitechessMonolithApplicationTests {
 	void contextLoads() {
 	}
 
+    @Test
+    void verifyArchitecture() {
+        ApplicationModules modules = ApplicationModules.of(LitechessMonolithApplication.class);
+        modules.verify();
+	}
 }

@@ -1,6 +1,6 @@
 package com.trymad.litechess_monolith.websocket;
 
-public record MoveEventDTO(
+public record MoveRequest(
         String color,
         String from,
         String to,
