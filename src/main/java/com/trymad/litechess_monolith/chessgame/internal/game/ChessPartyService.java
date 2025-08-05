@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.ChessPartyRepository;
 import com.trymad.litechess_monolith.chessgame.GameMove;
@@ -30,6 +31,10 @@ public class ChessPartyService {
 
 		if(!liveGameStore.contains(gameId)) {
 			ChessParty chessParty = chessPartyRepository.getById(gameId);
+			if(chessParty.getStatus() != ChessGameStatus.NOT_FINISHED) {
+				throw new IllegalStateException("Game is already finished: " + gameId);
+			}
+			
 			liveGameStore.createGame(chessParty, emulatorFactory.create(chessParty));
 		}
 

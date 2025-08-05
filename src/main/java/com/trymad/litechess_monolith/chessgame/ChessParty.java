@@ -22,4 +22,6 @@ public class ChessParty {
 
 	private final List<GameMove> moveList;
 
+	private final ChessGameStatus status;
+
 }

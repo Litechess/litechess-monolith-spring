@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.ChessPartyRepository;
 
@@ -29,6 +30,7 @@ public class LitechessMonolithApplication implements CommandLineRunner {
 			.white(UUID.fromString("ecccb4d8-4fad-45c4-b073-e77b4ec1ddbe"))
 			.black(UUID.fromString("8e455873-e706-4b0d-b1f4-a19291fd99d6"))
 			.moveList(new LinkedList<>())
+			.status(ChessGameStatus.NOT_FINISHED)
 			.build();
 		chessPartyRepository.save(chessParty);
 	}
