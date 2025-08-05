@@ -20,6 +20,7 @@ public class WebSocketController {
     @MessageMapping("game/{gameId}")
     // @SendTo("/topic/{gameId}/move")
     public void acceptMove(@Payload MoveRequest moveRequest, @DestinationVariable("gameId") Long gameId, Principal principal) {
+        System.out.println(moveRequest);
         moveService.publishMoveRequest(moveRequest, gameId, principal);
     }
 }
