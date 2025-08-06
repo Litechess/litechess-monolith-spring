@@ -5,7 +5,7 @@ import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 
 public interface LiveGameStore {
 	
-	LiveGame createGame(ChessParty chessParty, ChessPartyEmulator partyEmulator);
+	LiveGame create(ChessParty chessParty);
 
 	LiveGame get(Long id);
 

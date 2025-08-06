@@ -1,9 +1,10 @@
-package com.trymad.litechess_monolith.chessgame.internal.game;
+package com.trymad.litechess_monolith.chessgame.internal.game.emulator;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessPiece;
 import com.trymad.litechess_monolith.chessgame.GameMove;
 import com.trymad.litechess_monolith.chessgame.internal.model.PlayerColor;
@@ -13,8 +14,9 @@ import io.github.wolfraam.chessgame.board.PieceType;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import io.github.wolfraam.chessgame.move.Move;
+import io.github.wolfraam.chessgame.result.ChessGameResultType;
 
-public class ChessPartyEmulatorAdaptor implements ChessPartyEmulator {
+public class WolframChessPartyEmulator implements ChessPartyEmulator {
 
 	private final ChessGame chessGame;
 	
@@ -32,11 +34,11 @@ public class ChessPartyEmulatorAdaptor implements ChessPartyEmulator {
         .stream()
         .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 
-	public ChessPartyEmulatorAdaptor() {
+	public WolframChessPartyEmulator() {
 		this.chessGame = new ChessGame();
 	}
 
-	public ChessPartyEmulatorAdaptor(List<GameMove> moveList) {
+	public WolframChessPartyEmulator(List<GameMove> moveList) {
 		this.chessGame = new ChessGame();
 		this.setPosition(moveList);
 	}
@@ -50,7 +52,6 @@ public class ChessPartyEmulatorAdaptor implements ChessPartyEmulator {
 	public void move(GameMove move) {
 		final Move adaptedMove = createAdaptiveMove(move);
 		chessGame.playMove(adaptedMove);
-		System.out.println(chessGame.getGameResultType());
 	}
 
 	@Override
@@ -67,10 +68,8 @@ public class ChessPartyEmulatorAdaptor implements ChessPartyEmulator {
 	}
 
 	@Override
-	public List<GameMove> getMoves() {
-		return chessGame.getMoves().stream()
-			.map(this::createMove)
-			.toList();
+	public String getSan() {
+		return "";
 	}
 
 	private Move createAdaptiveMove(GameMove move) {
@@ -96,5 +95,29 @@ public class ChessPartyEmulatorAdaptor implements ChessPartyEmulator {
 
 	private ChessPiece getGamePiece(PieceType piece) {
 		return PIECE_TYPE_ADAPTER_FROM.get(piece);
+	}
+
+	@Override
+	public ChessGameStatus gameStatus() {
+		final ChessGameResultType resultType = chessGame.getGameResultType();
+		if(resultType == null) return ChessGameStatus.NOT_FINISHED;
+		else if(resultType == ChessGameResultType.BLACK_WINS) return ChessGameStatus.WIN_BLACK;
+		else if(resultType == ChessGameResultType.WHITE_WINS) return ChessGameStatus.WIN_WHITE;
+		else if (resultType == ChessGameResultType.DRAW) return ChessGameStatus.DRAW;
+		return null;
+	}
+
+	@Override
+	public String getFen() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getFen'");
+	}
+
+	@Override
+	public List<GameMove> getMoveList() {
+		return chessGame.getMoves()
+				.stream()
+				.map(this::createMove)
+				.collect(Collectors.toList());
 	}
 }

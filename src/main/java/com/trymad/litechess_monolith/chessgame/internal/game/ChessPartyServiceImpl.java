@@ -1,16 +1,13 @@
 package com.trymad.litechess_monolith.chessgame.internal.game;
 
-import java.util.Map;
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 
 import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.ChessPartyRepository;
+import com.trymad.litechess_monolith.chessgame.ChessPartyService;
+import com.trymad.litechess_monolith.chessgame.CreateGameDTO;
 import com.trymad.litechess_monolith.chessgame.GameMove;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
-import com.trymad.litechess_monolith.chessgame.internal.model.PlayerColor;
 import com.trymad.litechess_monolith.websocket.MoveEvent;
 import com.trymad.litechess_monolith.websocket.MoveRequest;
 
@@ -20,10 +17,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 // TODO logic when game end
-public class ChessPartyService {
+public class ChessPartyServiceImpl implements ChessPartyService{
 	
 	private final ChessPartyRepository chessPartyRepository;
-	private final ChessPartyEmulatorFactory emulatorFactory;
 	private final LiveGameStore liveGameStore;
 
 	public boolean doMove(MoveEvent moveEvent) {
@@ -35,27 +31,18 @@ public class ChessPartyService {
 				throw new IllegalStateException("Game is already finished: " + gameId);
 			}
 			
-			liveGameStore.createGame(chessParty, emulatorFactory.create(chessParty));
+			liveGameStore.create(chessParty);
 		}
 
-		
 		final LiveGame liveGame = liveGameStore.get(gameId);
-		final ChessPartyEmulator partyEmulator = liveGame.emulator();
-		final Map<PlayerColor, UUID> players = liveGame.players();
-		final PlayerColor currentColorTurn = partyEmulator.getCurrentTurnColor();
 		final MoveRequest moveRequest = moveEvent.moveRequest();
 		final GameMove move = new GameMove(moveRequest.from(), moveRequest.to(), moveRequest.promotion());
 
-		if(!players.get(currentColorTurn).equals(moveEvent.playerId()) ||
-			!partyEmulator.isLegalMove(move)) {
-			return false;	
-		}
-
-		partyEmulator.move(move);
-		return true;
+		return liveGame.playMove(move, moveEvent.playerId());
 	}
 
 	public ChessParty get(Long id) {
+		if(liveGameStore.contains(id)) return liveGameStore.get(id).getChessParty();
 		return chessPartyRepository.getById(id);
 	}
 
@@ -64,6 +51,12 @@ public class ChessPartyService {
 	}
 	
 	public ChessParty save(ChessParty chessParty) {
-		return chessPartyRepository.save(chessParty);
+		return chessPartyRepository.update(chessParty);
 	}
+
+	@Override
+	public ChessParty create(CreateGameDTO createGameDTO) {
+		return chessPartyRepository.create(createGameDTO);
+	}
+
 }
