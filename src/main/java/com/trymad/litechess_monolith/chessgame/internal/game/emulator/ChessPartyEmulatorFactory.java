@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.chessgame.internal.game;
+package com.trymad.litechess_monolith.chessgame.internal.game.emulator;
 
 import com.trymad.litechess_monolith.chessgame.ChessParty;
 

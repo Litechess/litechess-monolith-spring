@@ -1,30 +1,26 @@
 package com.trymad.litechess_monolith.chessgame.internal.game;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.chessgame.ChessParty;
+import com.trymad.litechess_monolith.chessgame.internal.game.emulator.ChessPartyEmulatorFactory;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
-import com.trymad.litechess_monolith.chessgame.internal.model.PlayerColor;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class InMemoryLiveGameStore implements LiveGameStore {
 
-	private final ConcurrentHashMap<Long, LiveGame> liveGames;
-
-	public InMemoryLiveGameStore() {
-		liveGames = new ConcurrentHashMap<>();
-	}
+	private final Map<Long, LiveGame> liveGames = new ConcurrentHashMap<>();
+	private final ChessPartyEmulatorFactory chessPartyEmulatorFactory;
 
 	@Override
-	public LiveGame createGame(ChessParty chessParty, ChessPartyEmulator partyEmulator) {
-		final Map<PlayerColor, UUID> players = 
-			Map.of(PlayerColor.WHITE, chessParty.getWhite(),
-				   PlayerColor.BLACK, chessParty.getBlack());
-		final LiveGame liveGame = new LiveGame(players, partyEmulator);
+	public LiveGame create(ChessParty chessParty) {
+		final LiveGame liveGame = new LiveGame(chessParty, chessPartyEmulatorFactory.create(chessParty));
 		return liveGames.put(chessParty.getId(), liveGame);
 	}
 
@@ -42,5 +38,4 @@ public class InMemoryLiveGameStore implements LiveGameStore {
 	public boolean contains(Long id) {
 		return liveGames.containsKey(id);
 	}
-	
 }

@@ -1,5 +1,6 @@
 package com.trymad.litechess_monolith.chessgame;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,14 +15,16 @@ import lombok.Setter;
 @Setter
 public class ChessParty {
 	
-	private final Long id;
+	private Long id;
 
-	private final UUID white;
+	private UUID white;
 
-	private final UUID black;
+	private UUID black;
 
-	private final List<GameMove> moveList;
+	private final List<GameMove> moveList = new LinkedList<>();
 
-	private final ChessGameStatus status;
+	private String initFen;
+
+	private ChessGameStatus status;
 
 }

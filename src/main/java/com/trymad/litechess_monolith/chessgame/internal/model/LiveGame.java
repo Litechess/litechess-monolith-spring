@@ -1,10 +1,51 @@
 package com.trymad.litechess_monolith.chessgame.internal.model;
 
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyEmulator;
+import com.trymad.litechess_monolith.chessgame.ChessParty;
+import com.trymad.litechess_monolith.chessgame.GameMove;
+import com.trymad.litechess_monolith.chessgame.internal.game.emulator.ChessPartyEmulator;
 
-public record LiveGame(Map<PlayerColor, UUID> players, ChessPartyEmulator emulator) {
-	
+public class LiveGame {
+
+	private final ChessParty chessParty;
+	private final ChessPartyEmulator emulator;
+	private final Map<PlayerColor, UUID> playerColors = new EnumMap<>(PlayerColor.class);
+
+	public LiveGame(ChessParty chessParty, ChessPartyEmulator emulator) {
+		this.chessParty = chessParty;
+		this.emulator = emulator;
+		setPlayers(chessParty);
+	}
+
+	public ChessParty chessParty() {
+		return chessParty;
+	}
+
+	public ChessPartyEmulator emulator() {
+		return emulator;
+	}
+
+	public boolean playMove(GameMove move, UUID playerId) {
+		final PlayerColor currentColorTurn = emulator.getCurrentTurnColor();
+		if (!playerColors.get(currentColorTurn).equals(playerId) || !emulator.isLegalMove(move)) {
+			return false;
+		}
+		emulator.move(move);
+		return true;
+	}
+
+	public ChessParty getChessParty() {
+		chessParty.setStatus(emulator.gameStatus());
+		chessParty.getMoveList().clear();
+		chessParty.getMoveList().addAll(emulator.getMoveList());
+		return chessParty;
+	}
+
+	private void setPlayers(ChessParty chessParty) {
+		playerColors.put(PlayerColor.WHITE, chessParty.getWhite());
+		playerColors.put(PlayerColor.BLACK, chessParty.getBlack());
+	}
 }
