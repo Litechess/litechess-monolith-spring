@@ -90,7 +90,9 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final Piece piece = chessPiece == null ? 
 			Piece.NONE : Piece.make(side, PieceType.fromSanSymbol(chessPiece.sanName()));
 
-		return new Move(fromSquare, toSquare, piece);
+		final Move move = new Move(fromSquare, toSquare, piece);
+		move.setSan(getSan());
+		return move;
 	}
 
 	private GameMove convertToGameMove(Move chesslibMove) {
@@ -99,7 +101,7 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final Piece piece = chesslibMove.getPromotion();
 		final ChessPiece promotion = piece == Piece.NONE ? null : ChessPiece.fromLetter.get(piece.getSanSymbol().toLowerCase());
 
-		return new GameMove(from, to, promotion);
+		return new GameMove(from, to, promotion, chesslibMove.getSan());
 	}
 
 	@Override

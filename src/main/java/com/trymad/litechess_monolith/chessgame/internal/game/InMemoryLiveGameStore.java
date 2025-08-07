@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.game.emulator.ChessPartyEmulatorFactory;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
+import com.trymad.litechess_monolith.chessgame.internal.service.LiveGameStore;
 
 import lombok.RequiredArgsConstructor;
 
