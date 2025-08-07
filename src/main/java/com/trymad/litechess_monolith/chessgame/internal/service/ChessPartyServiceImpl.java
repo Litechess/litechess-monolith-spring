@@ -1,12 +1,14 @@
-package com.trymad.litechess_monolith.chessgame.internal.game;
+package com.trymad.litechess_monolith.chessgame.internal.service;
 
 import org.springframework.stereotype.Service;
 
 import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
+import com.trymad.litechess_monolith.chessgame.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.ChessPartyService;
 import com.trymad.litechess_monolith.chessgame.CreateGameDTO;
 import com.trymad.litechess_monolith.chessgame.GameMove;
+import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyRepository;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.websocket.MoveEvent;
 import com.trymad.litechess_monolith.websocket.MoveRequest;
@@ -21,6 +23,7 @@ public class ChessPartyServiceImpl implements ChessPartyService{
 	
 	private final ChessPartyRepository chessPartyRepository;
 	private final LiveGameStore liveGameStore;
+	private final ChessUtilService chessUtilService;
 
 	public boolean doMove(MoveEvent moveEvent) {
 		final Long gameId = moveEvent.gameId();
@@ -36,7 +39,7 @@ public class ChessPartyServiceImpl implements ChessPartyService{
 
 		final LiveGame liveGame = liveGameStore.get(gameId);
 		final MoveRequest moveRequest = moveEvent.moveRequest();
-		final GameMove move = new GameMove(moveRequest.from(), moveRequest.to(), moveRequest.promotion());
+		final GameMove move = new GameMove(moveRequest.from(), moveRequest.to(), moveRequest.promotion(), moveRequest.san());
 
 		return liveGame.playMove(move, moveEvent.playerId());
 	}
@@ -57,6 +60,18 @@ public class ChessPartyServiceImpl implements ChessPartyService{
 	@Override
 	public ChessParty create(CreateGameDTO createGameDTO) {
 		return chessPartyRepository.create(createGameDTO);
+	}
+
+	@Override
+	public ChessPartyDTO getDto(ChessParty chessParty) {
+		return new ChessPartyDTO(
+			chessParty.getId(),
+			chessParty.getWhite(),
+			chessParty.getBlack(),
+			chessUtilService.getSan(chessParty.getInitFen(), chessParty.getMoveList()),
+			chessUtilService.getFen(chessParty.getInitFen(), chessParty.getMoveList()),
+			chessParty.getInitFen(),
+			chessParty.getStatus());
 	}
 
 }

@@ -14,4 +14,5 @@ public interface ChessPartyService {
 
 	ChessParty create(CreateGameDTO createGameDTO);
 
+	ChessPartyDTO getDto(ChessParty chessParty); // move to mapper later TODO
 }

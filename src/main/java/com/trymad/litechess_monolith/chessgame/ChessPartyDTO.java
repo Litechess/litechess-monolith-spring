@@ -2,13 +2,14 @@ package com.trymad.litechess_monolith.chessgame;
 
 import java.util.UUID;
 
-public record GameInfoDTO(
+public record ChessPartyDTO(
+	Long id,
 	UUID white,
 	UUID black,
-	String initFen,
+	String moveSan,
 	String fen,
-	ChessGameStatus status,
-	String moveSan
+	String initFen,
+	ChessGameStatus status
 ) {
 	
 }

@@ -86,7 +86,7 @@ public class WolframChessPartyEmulator implements ChessPartyEmulator {
 		final String to = move.to.name();
 		final ChessPiece promotion = move.promotion == null ? null : getGamePiece(move.promotion);
 
-		return new GameMove(from, to, promotion);
+		return new GameMove(from, to, promotion, null);
 	}
 
 	private PieceType getAdaptedPiece(ChessPiece piece) {

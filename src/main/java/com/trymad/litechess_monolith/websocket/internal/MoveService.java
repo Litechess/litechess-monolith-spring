@@ -4,7 +4,9 @@ import java.security.Principal;
 import java.util.UUID;
 
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,11 @@ public class MoveService {
 	@EventListener
 	@Async
 	void on(MoveAcceptedEvent event) {
-		messagingTemplate.convertAndSend("/topic/game/" + event.gameId(),event. moveRequest());
+		final Message<MoveRequest> message = MessageBuilder
+			.withPayload(event.moveRequest())
+			.setHeader("type", "move")
+			.build();
+		messagingTemplate.convertAndSend("/topic/game/" + event.gameId(), message);
 	}
 
 }
