@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.websocket.internal;
+package com.trymad.litechess_monolith.websocket.internal.config;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

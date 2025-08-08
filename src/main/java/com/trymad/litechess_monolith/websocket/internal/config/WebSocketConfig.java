@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.websocket.internal;
+package com.trymad.litechess_monolith.websocket.internal.config;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +23,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");
         config.setApplicationDestinationPrefixes("/app");
+        config.setUserDestinationPrefix("/user");
     }
 
     @Override
