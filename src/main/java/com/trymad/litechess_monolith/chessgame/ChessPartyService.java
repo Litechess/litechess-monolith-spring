@@ -12,7 +12,7 @@ public interface ChessPartyService {
 
 	ChessParty save(ChessParty chessParty);
 
-	ChessParty create(CreateGameDTO createGameDTO);
+	ChessParty create(CreatePartyDTO createGameDTO);
 
 	ChessPartyDTO getDto(ChessParty chessParty); // move to mapper later TODO
 }

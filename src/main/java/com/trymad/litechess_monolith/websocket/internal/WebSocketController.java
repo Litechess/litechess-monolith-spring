@@ -23,4 +23,5 @@ public class WebSocketController {
         System.out.println(moveRequest);
         moveService.publishMoveRequest(moveRequest, gameId, principal);
     }
+
 }

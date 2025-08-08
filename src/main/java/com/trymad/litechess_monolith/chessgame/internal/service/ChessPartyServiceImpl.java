@@ -6,7 +6,7 @@ import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.ChessPartyService;
-import com.trymad.litechess_monolith.chessgame.CreateGameDTO;
+import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.GameMove;
 import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyRepository;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
@@ -58,7 +58,7 @@ public class ChessPartyServiceImpl implements ChessPartyService{
 	}
 
 	@Override
-	public ChessParty create(CreateGameDTO createGameDTO) {
+	public ChessParty create(CreatePartyDTO createGameDTO) {
 		return chessPartyRepository.create(createGameDTO);
 	}
 

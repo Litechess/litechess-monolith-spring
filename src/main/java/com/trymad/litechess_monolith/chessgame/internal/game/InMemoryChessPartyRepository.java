@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.CreateGameDTO;
+import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
 
 
 @Component
@@ -32,7 +32,7 @@ public class InMemoryChessPartyRepository implements ChessPartyRepository {
 	}
 
 	@Override
-	public ChessParty create(CreateGameDTO createGameDTO) {
+	public ChessParty create(CreatePartyDTO createGameDTO) {
 		final Long gameId = idSequence++;
 		final ChessParty chessParty = ChessParty.builder()
 				.id(gameId)

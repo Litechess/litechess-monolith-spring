@@ -1,7 +1,7 @@
 package com.trymad.litechess_monolith.chessgame.internal.game;
 
 import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.CreateGameDTO;
+import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
 
 public interface ChessPartyRepository {
 	
@@ -9,7 +9,7 @@ public interface ChessPartyRepository {
 
 	boolean existsById(Long id);
 
-	ChessParty create(CreateGameDTO createGameDTO);
+	ChessParty create(CreatePartyDTO createGameDTO);
 
 	ChessParty update(ChessParty party);
 
