@@ -1,5 +1,9 @@
 package com.trymad.litechess_monolith.chessgame.internal.service;
 
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
@@ -8,8 +12,11 @@ import com.trymad.litechess_monolith.chessgame.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.ChessPartyService;
 import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.GameMove;
+import com.trymad.litechess_monolith.chessgame.internal.event.ChessPartyCreatedEventPublisher;
 import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyRepository;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
+import com.trymad.litechess_monolith.websocket.ChessPartyCreatedEvent;
+import com.trymad.litechess_monolith.websocket.GameFindedEvent;
 import com.trymad.litechess_monolith.websocket.MoveEvent;
 import com.trymad.litechess_monolith.websocket.MoveRequest;
 
@@ -24,7 +31,9 @@ public class ChessPartyServiceImpl implements ChessPartyService{
 	private final ChessPartyRepository chessPartyRepository;
 	private final LiveGameStore liveGameStore;
 	private final ChessUtilService chessUtilService;
+	private final ChessPartyCreatedEventPublisher createdEventPublisher;
 
+	
 	public boolean doMove(MoveEvent moveEvent) {
 		final Long gameId = moveEvent.gameId();
 
@@ -74,4 +83,15 @@ public class ChessPartyServiceImpl implements ChessPartyService{
 			chessParty.getStatus());
 	}
 
+	@EventListener
+	@Async
+	void on(GameFindedEvent event) {
+		final int whiteIndex = ThreadLocalRandom.current().nextInt(2);
+		final int blackIndex = whiteIndex == 0 ? 1 : 0;
+		final ChessParty chessParty = this.create(new CreatePartyDTO(
+			event.players().get(whiteIndex),
+			event.players().get(blackIndex)));
+			
+		createdEventPublisher.publish(new ChessPartyCreatedEvent(chessParty));
+	}
 }
