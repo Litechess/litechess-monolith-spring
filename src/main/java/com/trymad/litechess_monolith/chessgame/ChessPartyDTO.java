@@ -6,7 +6,7 @@ public record ChessPartyDTO(
 	Long id,
 	UUID white,
 	UUID black,
-	String moveSan,
+	String[] moveUci,
 	String fen,
 	String initFen,
 	ChessGameStatus status
