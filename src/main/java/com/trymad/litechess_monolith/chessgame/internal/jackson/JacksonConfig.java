@@ -13,6 +13,7 @@ public class JacksonConfig {
     Module chessPieceModule() {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(ChessPiece.class, new ChessPieceDeserializer());
+        module.addSerializer(ChessPiece.class, new ChessPieceSerializer());
         return module;
     }
 }
