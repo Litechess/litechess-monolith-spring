@@ -10,6 +10,7 @@ import com.trymad.litechess_monolith.chessgame.internal.game.emulator.ChessParty
 
 public class LiveGame {
 
+	private final Long id;
 	private final ChessParty chessParty;
 	private final ChessPartyEmulator emulator;
 	private final Map<PlayerColor, UUID> playerColors = new EnumMap<>(PlayerColor.class);
@@ -17,11 +18,16 @@ public class LiveGame {
 	public LiveGame(ChessParty chessParty, ChessPartyEmulator emulator) {
 		this.chessParty = chessParty;
 		this.emulator = emulator;
+		this.id = chessParty.getId();
 		setPlayers(chessParty);
 	}
 
 	public ChessParty chessParty() {
 		return chessParty;
+	}
+
+	public Long getId() {
+		return this.id;
 	}
 
 	public ChessPartyEmulator emulator() {

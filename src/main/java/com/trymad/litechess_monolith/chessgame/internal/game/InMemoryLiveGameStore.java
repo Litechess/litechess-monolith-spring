@@ -1,5 +1,7 @@
 package com.trymad.litechess_monolith.chessgame.internal.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,5 +40,12 @@ public class InMemoryLiveGameStore implements LiveGameStore {
 	@Override
 	public boolean contains(Long id) {
 		return liveGames.containsKey(id);
+	}
+
+	@Override
+	public List<LiveGame> getAll() {
+		final List<LiveGame> list = new ArrayList<>(liveGames.size());
+		list.addAll(liveGames.values());
+		return list;
 	}
 }

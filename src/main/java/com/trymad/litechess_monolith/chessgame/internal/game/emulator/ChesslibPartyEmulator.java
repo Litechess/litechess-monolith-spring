@@ -1,7 +1,6 @@
 package com.trymad.litechess_monolith.chessgame.internal.game.emulator;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.Piece;
@@ -19,7 +18,6 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 	
 	private final Board board;
 	private final MoveList moveList;
-	private final Logger logger = Logger.getLogger("Chesslib");
 
 	public ChesslibPartyEmulator() {
 		this.board = new Board();
