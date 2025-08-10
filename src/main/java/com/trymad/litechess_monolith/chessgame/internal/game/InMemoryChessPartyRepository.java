@@ -1,5 +1,7 @@
 package com.trymad.litechess_monolith.chessgame.internal.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,6 +46,13 @@ public class InMemoryChessPartyRepository implements ChessPartyRepository {
 		store.put(gameId, chessParty);
 
 		return chessParty;
+	}
+
+	@Override
+	public List<ChessParty> getAll() {
+		final List<ChessParty> parties = new ArrayList<>(store.size());
+		parties.addAll(store.values());
+		return parties;
 	}
 	
 }

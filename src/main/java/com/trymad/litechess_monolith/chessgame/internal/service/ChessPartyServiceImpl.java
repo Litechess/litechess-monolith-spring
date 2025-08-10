@@ -1,5 +1,6 @@
 package com.trymad.litechess_monolith.chessgame.internal.service;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.context.event.EventListener;
@@ -26,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 // TODO logic when game end
-public class ChessPartyServiceImpl implements ChessPartyService{
+public class ChessPartyServiceImpl implements ChessPartyService {
 	
 	private final ChessPartyRepository chessPartyRepository;
 	private final LiveGameStore liveGameStore;
@@ -96,5 +97,11 @@ public class ChessPartyServiceImpl implements ChessPartyService{
 			event.players().get(blackIndex)));
 			
 		createdEventPublisher.publish(new ChessPartyCreatedEvent(chessParty));
+	}
+
+	@Override
+	public List<ChessParty> getAll(boolean activeGames) {
+		return chessPartyRepository.getAll();
+
 	}
 }

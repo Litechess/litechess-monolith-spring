@@ -24,7 +24,8 @@ public class ChessLibUtilService implements ChessUtilService {
 	@Override
 	public String getFen(String initFen, List<GameMove> moves) {
 		final MoveList moveList = convertToMoveList(moves, initFen);
-		return moveList.getFen();
+		final String fen = moveList.getFen();
+		return fen == null ? initFen : fen;
 	}
 
 	private MoveList convertToMoveList(List<GameMove> moves, String initFen) {
