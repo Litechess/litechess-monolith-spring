@@ -1,6 +1,7 @@
 package com.trymad.litechess_monolith.chessgame.internal.game.emulator;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.Piece;
@@ -18,6 +19,7 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 	
 	private final Board board;
 	private final MoveList moveList;
+	private final Logger logger = Logger.getLogger("Chesslib");
 
 	public ChesslibPartyEmulator() {
 		this.board = new Board();
@@ -33,7 +35,7 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 	@Override
 	public boolean isLegalMove(GameMove move) {
 		final Move chessLibMove = convertToChesslibMove(move);
-		return board.isMoveLegal(chessLibMove, true);
+		return board.isMoveLegal(chessLibMove, false);
 	}
 
 	@Override
@@ -86,12 +88,10 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final Square toSquare = Square.fromValue(gameMove.to().toUpperCase());
 		final Side side = board.getSideToMove();
 		final ChessPiece chessPiece = gameMove.promotion();
-		System.out.println(side);
 		final Piece piece = chessPiece == null ? 
 			Piece.NONE : Piece.make(side, PieceType.fromSanSymbol(chessPiece.sanName()));
 
 		final Move move = new Move(fromSquare, toSquare, piece);
-		move.setSan(getSan());
 		return move;
 	}
 
@@ -101,7 +101,7 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final Piece piece = chesslibMove.getPromotion();
 		final ChessPiece promotion = piece == Piece.NONE ? null : ChessPiece.fromLetter.get(piece.getSanSymbol().toLowerCase());
 
-		return new GameMove(from, to, promotion, chesslibMove.getSan());
+		return new GameMove(from, to, promotion, null);
 	}
 
 	@Override

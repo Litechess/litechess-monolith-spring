@@ -2,6 +2,7 @@ package com.trymad.litechess_monolith.websocket.internal;
 
 import java.security.Principal;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
@@ -22,9 +23,11 @@ public class MoveService {
 	
 	private final MoveEventPublisher moveSender;
 	private final SimpMessagingTemplate messagingTemplate;
+	private final Logger logger = Logger.getLogger("moveService");
 
 	public void publishMoveRequest(MoveRequest moveRequest, Long gameId, Principal principal) {
 		final MoveEvent moveEvent = new MoveEvent(moveRequest, gameId, UUID.fromString(principal.getName()));
+		logger.info(moveRequest.toString());
 		moveSender.publish(moveEvent);
 	}
 

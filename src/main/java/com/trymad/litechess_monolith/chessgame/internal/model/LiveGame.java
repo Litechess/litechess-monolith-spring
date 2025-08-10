@@ -30,7 +30,7 @@ public class LiveGame {
 
 	public boolean playMove(GameMove move, UUID playerId) {
 		final PlayerColor currentColorTurn = emulator.getCurrentTurnColor();
-		if (!playerColors.get(currentColorTurn).equals(playerId) || !emulator.isLegalMove(move)) {
+		if (!playerColors.get(currentColorTurn).equals(playerId)) {
 			return false;
 		}
 		emulator.move(move);
