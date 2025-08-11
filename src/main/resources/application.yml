@@ -6,6 +6,9 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8000/realms/vue-test
+  data:
+    mongodb:
+      uri: mongodb://root:password@localhost:27017/neochess?authSource=admin
 server:
   port: 8080
 # logging:

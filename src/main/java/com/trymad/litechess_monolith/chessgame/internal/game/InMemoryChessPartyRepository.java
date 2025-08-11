@@ -3,6 +3,7 @@ package com.trymad.litechess_monolith.chessgame.internal.game;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
@@ -14,13 +15,13 @@ import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
 
 @Component
 public class InMemoryChessPartyRepository implements ChessPartyRepository {
-	private final String DEFAULT_INIT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+	private final static String DEFAULT_INIT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	private final Map<Long, ChessParty> store = new ConcurrentHashMap<>();
 	private Long idSequence = 1l;
 
 	@Override
-	public ChessParty getById(Long id) {
-		return store.get(id);
+	public Optional<ChessParty> getById(Long id) {
+		return Optional.of(store.get(id));
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 		final Long gameId = moveEvent.gameId();
 
 		if(!liveGameStore.contains(gameId)) {
-			ChessParty chessParty = chessPartyRepository.getById(gameId);
+			ChessParty chessParty = chessPartyRepository.getById(gameId).get();
 			if(chessParty.getStatus() != ChessGameStatus.NOT_FINISHED) {
 				throw new IllegalStateException("Game is already finished: " + gameId);
 			}
@@ -56,7 +56,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 
 	public ChessParty get(Long id) {
 		if(liveGameStore.contains(id)) return liveGameStore.get(id).getChessParty();
-		return chessPartyRepository.getById(id);
+		return chessPartyRepository.getById(id).get();
 	}
 
 	public boolean exists(Long id) {
