@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +19,17 @@ import lombok.Setter;
 @Setter
 @Document
 public class ChessParty {
-	
+
+	@PersistenceCreator
+	public ChessParty(Long id, UUID white, UUID black, List<GameMove> moveList, String initFen, ChessGameStatus status) {
+		this.id = id;
+		this.white = white;
+		this.black = black;
+		this.moveList.addAll(moveList != null ? moveList : List.of());
+		this.initFen = initFen;
+		this.status = status;
+	}
+
 	@Id
 	private Long id;
 
