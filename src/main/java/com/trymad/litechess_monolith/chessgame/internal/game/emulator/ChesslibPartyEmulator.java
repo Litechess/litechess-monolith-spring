@@ -99,7 +99,7 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final Piece piece = chesslibMove.getPromotion();
 		final ChessPiece promotion = piece == Piece.NONE ? null : ChessPiece.fromLetter.get(piece.getSanSymbol().toLowerCase());
 
-		return new GameMove(from, to, promotion, null);
+		return new GameMove(from, to, promotion);
 	}
 
 	@Override

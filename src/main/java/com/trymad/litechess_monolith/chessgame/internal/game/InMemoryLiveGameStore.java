@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.game.emulator.ChessPartyEmulatorFactory;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
+import com.trymad.litechess_monolith.chessgame.internal.service.ChessUtilService;
 import com.trymad.litechess_monolith.chessgame.internal.service.LiveGameStore;
+import com.trymad.litechess_monolith.websocket.MoveEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,7 @@ public class InMemoryLiveGameStore implements LiveGameStore {
 
 	private final Map<Long, LiveGame> liveGames = new ConcurrentHashMap<>();
 	private final ChessPartyEmulatorFactory chessPartyEmulatorFactory;
+	private final ChessUtilService chessUtilService;
 
 	@Override
 	public LiveGame create(ChessParty chessParty) {
@@ -47,5 +50,12 @@ public class InMemoryLiveGameStore implements LiveGameStore {
 		final List<LiveGame> list = new ArrayList<>(liveGames.size());
 		list.addAll(liveGames.values());
 		return list;
+	}
+
+	@Override
+	public boolean doMove(MoveEvent event) {
+		if(!liveGames.containsKey(event.gameId())) throw new IllegalStateException("live game dont exists");
+		final LiveGame liveGame = liveGames.get(event.gameId());
+		return liveGame.playMove(chessUtilService.toGameMove(event.moveRequest()), event.playerId());
 	}
 }

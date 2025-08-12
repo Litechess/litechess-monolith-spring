@@ -11,6 +11,7 @@ import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.trymad.litechess_monolith.chessgame.GameMove;
+import com.trymad.litechess_monolith.websocket.MoveRequest;
 
 @Component
 public class ChessLibUtilService implements ChessUtilService {
@@ -41,5 +42,10 @@ public class ChessLibUtilService implements ChessUtilService {
 		});
 
 		return moveList;
+	}
+
+	@Override
+	public GameMove toGameMove(MoveRequest request) {
+		return new GameMove(request.from(), request.to(), request.promotion());
 	}
 }

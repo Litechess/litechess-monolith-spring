@@ -12,14 +12,11 @@ import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.ChessPartyService;
 import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
-import com.trymad.litechess_monolith.chessgame.GameMove;
 import com.trymad.litechess_monolith.chessgame.internal.event.ChessPartyCreatedEventPublisher;
 import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyRepository;
-import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.websocket.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.websocket.GameFindedEvent;
 import com.trymad.litechess_monolith.websocket.MoveEvent;
-import com.trymad.litechess_monolith.websocket.MoveRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,11 +44,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 			liveGameStore.create(chessParty);
 		}
 
-		final LiveGame liveGame = liveGameStore.get(gameId);
-		final MoveRequest moveRequest = moveEvent.moveRequest();
-		final GameMove move = new GameMove(moveRequest.from(), moveRequest.to(), moveRequest.promotion(), moveRequest.san());
-
-		return liveGame.playMove(move, moveEvent.playerId());
+		return liveGameStore.doMove(moveEvent);
 	}
 
 	public ChessParty get(Long id) {
