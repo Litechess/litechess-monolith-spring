@@ -19,4 +19,6 @@ public interface ChessPartyService {
 	ChessParty create(CreatePartyDTO createGameDTO);
 
 	ChessPartyDTO getDto(ChessParty chessParty); // move to mapper later TODO
+
+	boolean stopActiveGame(Long gameId);
 }

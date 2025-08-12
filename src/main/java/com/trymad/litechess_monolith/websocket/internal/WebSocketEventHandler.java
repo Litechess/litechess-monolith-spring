@@ -7,6 +7,8 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.trymad.litechess_monolith.chessgame.ChessParty;
+import com.trymad.litechess_monolith.chessgame.GameFinishEvent;
 import com.trymad.litechess_monolith.websocket.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.websocket.GameCreatedDTO;
 
@@ -33,6 +35,18 @@ public class WebSocketEventHandler {
 			event.chessParty().getWhite().toString(), "/topic/matchmaking/queue", createdGame);
 		messagingTemplate.convertAndSendToUser(
 			event.chessParty().getBlack().toString(), "/topic/matchmaking/queue", createdGame);
+	}
+
+	@EventListener
+	@Async
+	void on(GameFinishEvent event) {
+		final ChessParty chessParty = event.chessParty();
+		final Message<GameResultMessage> gameResult = MessageBuilder
+			.withPayload(new GameResultMessage(chessParty.getStatus()))
+			.setHeader("type", "gameFinish")
+			.build();
+
+		messagingTemplate.convertAndSend("/topic/game/" + chessParty.getId(), gameResult);
 	}
 	
 }

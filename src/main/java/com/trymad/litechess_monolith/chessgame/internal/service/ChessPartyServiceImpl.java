@@ -97,4 +97,9 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 		return chessPartyRepository.getAll();
 
 	}
+
+	@Override
+	public boolean stopActiveGame(Long gameId) {
+		return liveGameStore.delete(gameId) == null ? false : true;
+	}
 }
