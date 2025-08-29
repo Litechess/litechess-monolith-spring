@@ -74,6 +74,10 @@
 			<version>${spring-modulith.version}</version>
 		</dependency> -->
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.github.wolfraam</groupId>
 			<artifactId>chessgame</artifactId>
 			<version>2.3</version>

@@ -32,9 +32,9 @@ public class WebSocketEventHandler {
 			.build();
 		
 		messagingTemplate.convertAndSendToUser(
-			event.chessParty().getWhite().toString(), "/topic/matchmaking/queue", createdGame);
+			event.chessParty().getWhite().id().toString(), "/topic/matchmaking/queue", createdGame);
 		messagingTemplate.convertAndSendToUser(
-			event.chessParty().getBlack().toString(), "/topic/matchmaking/queue", createdGame);
+			event.chessParty().getBlack().id().toString(), "/topic/matchmaking/queue", createdGame);
 	}
 
 	@EventListener

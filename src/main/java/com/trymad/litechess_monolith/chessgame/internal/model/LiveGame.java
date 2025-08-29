@@ -48,7 +48,7 @@ public class LiveGame {
 	}
 
 	private void setPlayers(ChessParty chessParty) {
-		playerColors.put(PlayerColor.WHITE, chessParty.getWhite());
-		playerColors.put(PlayerColor.BLACK, chessParty.getBlack());
+		playerColors.put(PlayerColor.WHITE, chessParty.getWhite().id());
+		playerColors.put(PlayerColor.BLACK, chessParty.getBlack().id());
 	}
 }

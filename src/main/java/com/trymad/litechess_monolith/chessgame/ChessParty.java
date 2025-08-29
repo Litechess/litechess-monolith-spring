@@ -2,7 +2,6 @@ package com.trymad.litechess_monolith.chessgame;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -21,7 +20,7 @@ import lombok.Setter;
 public class ChessParty {
 
 	@PersistenceCreator
-	public ChessParty(Long id, UUID white, UUID black, List<GameMove> moveList, String initFen, ChessGameStatus status) {
+	public ChessParty(Long id, PlayerInfo white, PlayerInfo black, List<GameMove> moveList, String initFen, ChessGameStatus status) {
 		this.id = id;
 		this.white = white;
 		this.black = black;
@@ -33,9 +32,9 @@ public class ChessParty {
 	@Id
 	private Long id;
 
-	private UUID white;
+	private PlayerInfo white;
 
-	private UUID black;
+	private PlayerInfo black;
 
 	private final List<GameMove> moveList = new LinkedList<>();
 

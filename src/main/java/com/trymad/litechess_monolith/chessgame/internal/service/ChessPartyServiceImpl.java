@@ -1,6 +1,7 @@
 package com.trymad.litechess_monolith.chessgame.internal.service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.context.event.EventListener;
@@ -12,8 +13,11 @@ import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.ChessPartyService;
 import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
+import com.trymad.litechess_monolith.chessgame.PlayerInfo;
+import com.trymad.litechess_monolith.chessgame.internal.client.UserInfoClient;
 import com.trymad.litechess_monolith.chessgame.internal.event.ChessPartyCreatedEventPublisher;
 import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyRepository;
+import com.trymad.litechess_monolith.users.UserInfoDTO;
 import com.trymad.litechess_monolith.websocket.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.websocket.GameFindedEvent;
 import com.trymad.litechess_monolith.websocket.MoveEvent;
@@ -30,6 +34,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 	private final LiveGameStore liveGameStore;
 	private final ChessUtilService chessUtilService;
 	private final ChessPartyCreatedEventPublisher createdEventPublisher;
+	private final UserInfoClient userInfoClient;
 
 	
 	public boolean doMove(MoveEvent moveEvent) {
@@ -80,14 +85,24 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 			chessParty.getStatus());
 	}
 
+	private final PlayerInfo getPlayerInfo(UUID id) {
+		final UserInfoDTO infoDto = userInfoClient.get(id);
+		return new PlayerInfo(infoDto.id(), infoDto.nickname());
+	}
+
 	@EventListener
 	@Async
 	void on(GameFindedEvent event) {
 		final int whiteIndex = ThreadLocalRandom.current().nextInt(2);
 		final int blackIndex = whiteIndex == 0 ? 1 : 0;
+		
+		final PlayerInfo white = this.getPlayerInfo(event.players().get(whiteIndex));
+		final PlayerInfo black = this.getPlayerInfo(event.players().get(blackIndex));
+		
+
 		final ChessParty chessParty = this.create(new CreatePartyDTO(
-			event.players().get(whiteIndex),
-			event.players().get(blackIndex)));
+			white,
+			black));
 			
 		createdEventPublisher.publish(new ChessPartyCreatedEvent(chessParty));
 	}
