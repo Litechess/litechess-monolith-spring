@@ -3,6 +3,8 @@ package com.trymad.litechess_monolith.chessgame.internal.service;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -17,6 +19,7 @@ import com.trymad.litechess_monolith.chessgame.PlayerInfo;
 import com.trymad.litechess_monolith.chessgame.internal.client.UserInfoClient;
 import com.trymad.litechess_monolith.chessgame.internal.event.ChessPartyCreatedEventPublisher;
 import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyRepository;
+import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.users.UserInfoDTO;
 import com.trymad.litechess_monolith.websocket.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.websocket.GameFindedEvent;
@@ -109,7 +112,14 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 
 	@Override
 	public List<ChessParty> getAll(boolean activeGames) {
-		return chessPartyRepository.getAll();
+		final List<ChessParty> dbGames = chessPartyRepository.getAll();
+        List<ChessParty> result = activeGames ? 
+		Stream.concat(liveGameStore.getAll().stream().map(LiveGame::getChessParty), dbGames.stream())
+            .distinct()
+            .collect(Collectors.toList()) 
+		: dbGames;
+		
+		return result;
 
 	}
 
