@@ -120,7 +120,6 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 		: dbGames;
 		
 		return result;
-
 	}
 
 	@Override

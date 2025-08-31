@@ -1,14 +1,19 @@
 package com.trymad.litechess_monolith.websocket.internal;
 
+import java.util.UUID;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.GameFinishEvent;
+import com.trymad.litechess_monolith.event.queueLeave.QueueLeaveEvent;
+import com.trymad.litechess_monolith.event.queueLeave.QueueLeaveEventPublisher;
 import com.trymad.litechess_monolith.websocket.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.websocket.GameCreatedDTO;
 
@@ -21,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class WebSocketEventHandler {
 	
 	private final SimpMessagingTemplate messagingTemplate;
+	private final QueueLeaveEventPublisher queueLeavePublisher;
 
 	@EventListener
 	@Async
@@ -48,5 +54,10 @@ public class WebSocketEventHandler {
 
 		messagingTemplate.convertAndSend("/topic/game/" + chessParty.getId(), gameResult);
 	}
+
+	@EventListener
+	void on(SessionUnsubscribeEvent event) {
+		queueLeavePublisher.publish(new QueueLeaveEvent(UUID.fromString(event.getUser().getName())));
+	} 
 	
 }

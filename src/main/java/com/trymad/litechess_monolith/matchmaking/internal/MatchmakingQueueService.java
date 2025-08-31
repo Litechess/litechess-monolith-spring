@@ -8,4 +8,6 @@ public interface MatchmakingQueueService {
 	
 	void add(CreateGameRequest createGameRequest, UUID playerId);
 
+	void leave(UUID playerId);
+
 }
