@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
+import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.internal.mongo.SequenceGeneratorService;
 
 import lombok.RequiredArgsConstructor;
