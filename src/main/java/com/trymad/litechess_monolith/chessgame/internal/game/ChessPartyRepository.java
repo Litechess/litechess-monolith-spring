@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
+import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
 
 public interface ChessPartyRepository {
 	

@@ -9,8 +9,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.event.queueLeave.QueueLeaveEvent;
 import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
+import com.trymad.litechess_monolith.matchmaking.api.event.QueueLeaveEvent;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 

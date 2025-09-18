@@ -64,8 +64,11 @@ public class InMemoryLiveGameStore implements LiveGameStore {
 		if(liveGame.getStatus() != ChessGameStatus.NOT_FINISHED) return false;
 		
 		boolean isMoveDone = liveGame.playMove(chessUtilService.toGameMove(event.moveRequest()), event.playerId());
+
+		// TODO replace to mapper
 		if(liveGame.getStatus() != ChessGameStatus.NOT_FINISHED) {
-			eventPublisher.publish(new GameFinishEvent(liveGame.getChessParty()));
+			final ChessParty chessParty = liveGame.getChessParty();
+			eventPublisher.publish(new GameFinishEvent(chessParty));
 		}
 
 		return isMoveDone;

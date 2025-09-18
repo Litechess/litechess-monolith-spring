@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.ChessPartyService;
-import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.PlayerInfo;
+import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.api.event.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
@@ -81,6 +81,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 		return chessPartyRepository.create(createGameDTO);
 	}
 
+	// TODO mapper
 	@Override
 	public ChessPartyDTO getDto(ChessParty chessParty) {
 		return new ChessPartyDTO(
@@ -113,7 +114,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 			white,
 			black));
 			
-		eventPublisher.publish(new ChessPartyCreatedEvent(chessParty));
+		eventPublisher.publish(new ChessPartyCreatedEvent(chessParty)); 
 	}
 
 	@Override

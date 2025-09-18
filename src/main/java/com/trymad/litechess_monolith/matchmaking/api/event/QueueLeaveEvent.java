@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.event.queueLeave;
+package com.trymad.litechess_monolith.matchmaking.api.event;
 
 import java.util.UUID;
 
