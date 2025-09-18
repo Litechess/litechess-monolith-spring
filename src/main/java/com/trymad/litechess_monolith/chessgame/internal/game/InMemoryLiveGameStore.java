@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.GameFinishEvent;
-import com.trymad.litechess_monolith.chessgame.internal.event.GameFinishEventPublisher;
+import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.chessgame.internal.game.emulator.ChessPartyEmulatorFactory;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.chessgame.internal.service.ChessUtilService;
 import com.trymad.litechess_monolith.chessgame.internal.service.LiveGameStore;
-import com.trymad.litechess_monolith.websocket.MoveEvent;
+import com.trymad.litechess_monolith.shared.event.EventPublisher;
+import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,7 @@ public class InMemoryLiveGameStore implements LiveGameStore {
 	private final Map<Long, LiveGame> liveGames = new ConcurrentHashMap<>();
 	private final ChessPartyEmulatorFactory chessPartyEmulatorFactory;
 	private final ChessUtilService chessUtilService;
-	private final GameFinishEventPublisher gameFinishEventPublisher;
+	private final EventPublisher eventPublisher;
 
 	@Override
 	public LiveGame create(ChessParty chessParty) {
@@ -65,7 +65,7 @@ public class InMemoryLiveGameStore implements LiveGameStore {
 		
 		boolean isMoveDone = liveGame.playMove(chessUtilService.toGameMove(event.moveRequest()), event.playerId());
 		if(liveGame.getStatus() != ChessGameStatus.NOT_FINISHED) {
-			gameFinishEventPublisher.publish(new GameFinishEvent(liveGame.getChessParty()));
+			eventPublisher.publish(new GameFinishEvent(liveGame.getChessParty()));
 		}
 
 		return isMoveDone;

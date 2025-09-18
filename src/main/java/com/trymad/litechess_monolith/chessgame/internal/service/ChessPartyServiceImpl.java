@@ -6,8 +6,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
@@ -16,14 +14,16 @@ import com.trymad.litechess_monolith.chessgame.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.ChessPartyService;
 import com.trymad.litechess_monolith.chessgame.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.PlayerInfo;
+import com.trymad.litechess_monolith.chessgame.api.event.ChessPartyCreatedEvent;
+import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
+import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.chessgame.internal.client.UserInfoClient;
-import com.trymad.litechess_monolith.chessgame.internal.event.ChessPartyCreatedEventPublisher;
 import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyRepository;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
+import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
+import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.users.UserInfoDTO;
-import com.trymad.litechess_monolith.websocket.ChessPartyCreatedEvent;
-import com.trymad.litechess_monolith.websocket.GameFindedEvent;
-import com.trymad.litechess_monolith.websocket.MoveEvent;
+import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +36,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 	private final ChessPartyRepository chessPartyRepository;
 	private final LiveGameStore liveGameStore;
 	private final ChessUtilService chessUtilService;
-	private final ChessPartyCreatedEventPublisher createdEventPublisher;
+	private final EventPublisher eventPublisher;
 	private final UserInfoClient userInfoClient;
 
 	
@@ -52,7 +52,15 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 			liveGameStore.create(chessParty);
 		}
 
-		return liveGameStore.doMove(moveEvent);
+		if(liveGameStore.doMove(moveEvent) == false) {
+			return false;
+		};
+		
+		final MoveAcceptedEvent acceptedMoveEvent = 
+			new MoveAcceptedEvent(moveEvent.moveRequest(), moveEvent.gameId(), moveEvent.playerId());
+		eventPublisher.publish(acceptedMoveEvent);
+
+		return true;
 	}
 
 	public ChessParty get(Long id) {
@@ -93,9 +101,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 		return new PlayerInfo(infoDto.id(), infoDto.nickname());
 	}
 
-	@EventListener
-	@Async
-	void on(GameFindedEvent event) {
+	public void createGame(GameFindedEvent event) {
 		final int whiteIndex = ThreadLocalRandom.current().nextInt(2);
 		final int blackIndex = whiteIndex == 0 ? 1 : 0;
 		
@@ -107,7 +113,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 			white,
 			black));
 			
-		createdEventPublisher.publish(new ChessPartyCreatedEvent(chessParty));
+		eventPublisher.publish(new ChessPartyCreatedEvent(chessParty));
 	}
 
 	@Override
@@ -125,5 +131,12 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 	@Override
 	public boolean stopActiveGame(Long gameId) {
 		return liveGameStore.delete(gameId) == null ? false : true;
+	}
+
+	@Override
+	public void finishGame(GameFinishEvent event) {
+		this.save(event.chessParty());
+		this.stopActiveGame(event.chessParty().getId());
+	
 	}
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
-import com.trymad.litechess_monolith.websocket.MoveEvent;
+import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 
 public interface LiveGameStore {
 	

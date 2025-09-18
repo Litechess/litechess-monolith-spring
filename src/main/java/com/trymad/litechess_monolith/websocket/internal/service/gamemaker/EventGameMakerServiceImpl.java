@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.matchmaking.GameMakerService;
 import com.trymad.litechess_monolith.websocket.CreateGameRequest;
-import com.trymad.litechess_monolith.websocket.QueueRegistryEvent;
+import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 
 import lombok.RequiredArgsConstructor;
 

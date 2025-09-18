@@ -2,11 +2,11 @@ package com.trymad.litechess_monolith.matchmaking.internal;
 
 import java.util.UUID;
 
-import com.trymad.litechess_monolith.websocket.CreateGameRequest;
+import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 
 public interface MatchmakingQueueService {
 	
-	void add(CreateGameRequest createGameRequest, UUID playerId);
+	void add(QueueRegistryEvent event);
 
 	void leave(UUID playerId);
 

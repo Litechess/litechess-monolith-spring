@@ -10,9 +10,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.event.queueLeave.QueueLeaveEvent;
-import com.trymad.litechess_monolith.event.queueLeave.QueueLeaveEventPublisher;
-import com.trymad.litechess_monolith.websocket.CreateGameRequest;
-import com.trymad.litechess_monolith.websocket.GameFindedEvent;
+import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
+import com.trymad.litechess_monolith.shared.event.EventPublisher;
+import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,23 +21,22 @@ import lombok.RequiredArgsConstructor;
 public class SimpleMatchmakingQueueService implements MatchmakingQueueService {
 
 	private Queue<UUID> queue = new LinkedBlockingQueue<>();
-	private final GameFindedEventPublisher gameFindedEventPublisher;
-	private final QueueLeaveEventPublisher publisher;
+	private final EventPublisher eventPublisher;
 
 	@Override
-	public void add(CreateGameRequest createGameRequest, UUID playerId) {
-		if(queue.contains(playerId)) {
+	public void add(QueueRegistryEvent event) {
+		if(queue.contains(event.playerId())) {
 			return;
 		}
 		
 		if(queue.size() == 0) {
-			queue.add(playerId);
+			queue.add(event.playerId());
 			return;
 		}
 
 		final UUID oponent = queue.poll();
-		final GameFindedEvent event = new GameFindedEvent(List.of(oponent, playerId), createGameRequest);
-		gameFindedEventPublisher.publish(event);
+		final GameFindedEvent gameFindedEvent = new GameFindedEvent(List.of(oponent, event.playerId()), event.request());
+		eventPublisher.publish(gameFindedEvent);
 	}
 
 	@Override
