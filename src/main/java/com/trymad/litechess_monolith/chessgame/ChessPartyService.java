@@ -2,7 +2,9 @@ package com.trymad.litechess_monolith.chessgame;
 
 import java.util.List;
 
-import com.trymad.litechess_monolith.websocket.MoveEvent;
+import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
+import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
+import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 
 public interface ChessPartyService {
 	
@@ -21,4 +23,8 @@ public interface ChessPartyService {
 	ChessPartyDTO getDto(ChessParty chessParty); // move to mapper later TODO
 
 	boolean stopActiveGame(Long gameId);
+
+	void finishGame(GameFinishEvent event);
+
+	void createGame(GameFindedEvent event);
 }

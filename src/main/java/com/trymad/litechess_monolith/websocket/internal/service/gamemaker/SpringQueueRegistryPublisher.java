@@ -3,7 +3,7 @@ package com.trymad.litechess_monolith.websocket.internal.service.gamemaker;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.websocket.QueueRegistryEvent;
+import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 
 import lombok.RequiredArgsConstructor;
 
