@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.matchmaking.internal;
+package com.trymad.litechess_monolith.matchmaking.internal.service;
 
 import java.util.UUID;
 

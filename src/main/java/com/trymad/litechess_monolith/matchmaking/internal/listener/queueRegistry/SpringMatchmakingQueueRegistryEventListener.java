@@ -3,7 +3,7 @@ package com.trymad.litechess_monolith.matchmaking.internal.listener.queueRegistr
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.matchmaking.internal.MatchmakingQueueService;
+import com.trymad.litechess_monolith.matchmaking.internal.service.MatchmakingQueueService;
 import com.trymad.litechess_monolith.shared.event.EventListener;
 import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 
