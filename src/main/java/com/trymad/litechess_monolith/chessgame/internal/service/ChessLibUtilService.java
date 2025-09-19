@@ -46,6 +46,6 @@ public class ChessLibUtilService implements ChessUtilService {
 
 	@Override
 	public GameMove toGameMove(MoveRequest request) {
-		return new GameMove(request.from(), request.to(), request.promotion());
+		return new GameMove(request.from(), request.to(), request.promotion(), request.san());
 	}
 }

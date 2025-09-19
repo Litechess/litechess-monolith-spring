@@ -88,10 +88,7 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 			chessParty.getId(),
 			chessParty.getWhite(),
 			chessParty.getBlack(),
-			chessParty.getMoveList().stream()
-			.map(move -> {
-				 return move.from() + move.to() + (move.promotion() == null ? "" : move.promotion().sanName().toLowerCase());
-			}).toArray(String[]::new),
+			chessParty.getMoveList(),
 			chessUtilService.getFen(chessParty.getInitFen(), chessParty.getMoveList()),
 			chessParty.getInitFen(),
 			chessParty.getStatus());

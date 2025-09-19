@@ -86,10 +86,12 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final Square toSquare = Square.fromValue(gameMove.to().toUpperCase());
 		final Side side = board.getSideToMove();
 		final ChessPiece chessPiece = gameMove.promotion();
+		final String san = gameMove.san();
 		final Piece piece = chessPiece == null ? 
 			Piece.NONE : Piece.make(side, PieceType.fromSanSymbol(chessPiece.sanName()));
 
 		final Move move = new Move(fromSquare, toSquare, piece);
+		move.setSan(san);
 		return move;
 	}
 
@@ -97,9 +99,10 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final String from = chesslibMove.getFrom().value().toLowerCase();
 		final String to = chesslibMove.getTo().value().toLowerCase();
 		final Piece piece = chesslibMove.getPromotion();
+		final String san = chesslibMove.getSan();
 		final ChessPiece promotion = piece == Piece.NONE ? null : ChessPiece.fromLetter.get(piece.getSanSymbol().toLowerCase());
 
-		return new GameMove(from, to, promotion);
+		return new GameMove(from, to, promotion, san);
 	}
 
 	@Override
