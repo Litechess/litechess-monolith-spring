@@ -1,9 +1,9 @@
-package com.trymad.litechess_monolith.chessgame.internal.game.emulator;
+package com.trymad.litechess_monolith.chessgame.internal.emulator;
 
 import java.util.List;
 
-import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
-import com.trymad.litechess_monolith.chessgame.GameMove;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.api.model.GameMove;
 import com.trymad.litechess_monolith.chessgame.internal.model.PlayerColor;
 
 public interface ChessPartyEmulator {

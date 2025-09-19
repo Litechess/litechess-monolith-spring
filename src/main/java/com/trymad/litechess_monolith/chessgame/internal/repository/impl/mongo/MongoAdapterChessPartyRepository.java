@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.chessgame.internal.game;
+package com.trymad.litechess_monolith.chessgame.internal.repository.impl.mongo;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
-import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
-import com.trymad.litechess_monolith.chessgame.internal.mongo.SequenceGeneratorService;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
+import com.trymad.litechess_monolith.chessgame.internal.repository.ChessPartyRepository;
 
 import lombok.RequiredArgsConstructor;
 

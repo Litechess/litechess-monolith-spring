@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.chessgame.internal.game.emulator;
+package com.trymad.litechess_monolith.chessgame.internal.emulator.impl.chesslib;
 
 import java.util.List;
 
@@ -9,9 +9,10 @@ import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
-import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
-import com.trymad.litechess_monolith.chessgame.ChessPiece;
-import com.trymad.litechess_monolith.chessgame.GameMove;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessPiece;
+import com.trymad.litechess_monolith.chessgame.api.model.GameMove;
+import com.trymad.litechess_monolith.chessgame.internal.emulator.ChessPartyEmulator;
 import com.trymad.litechess_monolith.chessgame.internal.model.PlayerColor;
 
 public class ChesslibPartyEmulator implements ChessPartyEmulator {

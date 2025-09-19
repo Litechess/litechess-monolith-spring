@@ -3,7 +3,7 @@ package com.trymad.litechess_monolith.chessgame.internal.jackson;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.trymad.litechess_monolith.chessgame.ChessPiece;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessPiece;
 
 import java.io.IOException;
 

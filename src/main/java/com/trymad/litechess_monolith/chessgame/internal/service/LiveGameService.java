@@ -2,11 +2,11 @@ package com.trymad.litechess_monolith.chessgame.internal.service;
 
 import java.util.List;
 
-import com.trymad.litechess_monolith.chessgame.ChessParty;
+import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 
-public interface LiveGameStore {
+public interface LiveGameService {
 	
 	LiveGame create(ChessParty chessParty);
 

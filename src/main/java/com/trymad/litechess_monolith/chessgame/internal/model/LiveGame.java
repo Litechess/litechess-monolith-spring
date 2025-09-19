@@ -4,10 +4,9 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
-import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.GameMove;
-import com.trymad.litechess_monolith.chessgame.internal.game.emulator.ChessPartyEmulator;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.api.model.GameMove;
+import com.trymad.litechess_monolith.chessgame.internal.emulator.ChessPartyEmulator;
 
 public class LiveGame {
 

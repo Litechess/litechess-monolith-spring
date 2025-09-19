@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.trymad.litechess_monolith.chessgame.ChessPiece;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessPiece;
 
 public class ChessPieceSerializer extends JsonSerializer<ChessPiece> {
 

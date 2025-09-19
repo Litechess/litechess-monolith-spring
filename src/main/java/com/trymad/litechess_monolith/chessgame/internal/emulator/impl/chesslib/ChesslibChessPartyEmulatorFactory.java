@@ -1,9 +1,11 @@
-package com.trymad.litechess_monolith.chessgame.internal.game.emulator;
+package com.trymad.litechess_monolith.chessgame.internal.emulator.impl.chesslib;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.chessgame.ChessParty;
+import com.trymad.litechess_monolith.chessgame.internal.emulator.ChessPartyEmulator;
+import com.trymad.litechess_monolith.chessgame.internal.emulator.ChessPartyEmulatorFactory;
+import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 
 @Component
 @Primary

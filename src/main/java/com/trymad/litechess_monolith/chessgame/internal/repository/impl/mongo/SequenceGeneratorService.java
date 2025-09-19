@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.chessgame.internal.mongo;
+package com.trymad.litechess_monolith.chessgame.internal.repository.impl.mongo;
 
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;

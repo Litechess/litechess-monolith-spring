@@ -1,8 +1,8 @@
 package com.trymad.litechess_monolith.websocket;
 
-import com.trymad.litechess_monolith.chessgame.GameCategory;
-import com.trymad.litechess_monolith.chessgame.GameVariant;
-import com.trymad.litechess_monolith.chessgame.TimeControlVariant;
+import com.trymad.litechess_monolith.chessgame.api.model.GameCategory;
+import com.trymad.litechess_monolith.chessgame.api.model.GameVariant;
+import com.trymad.litechess_monolith.chessgame.api.model.TimeControlVariant;
 
 public record CreateGameRequest(
 	GameVariant variant, 

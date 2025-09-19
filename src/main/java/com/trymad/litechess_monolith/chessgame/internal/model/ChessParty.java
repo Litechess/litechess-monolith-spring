@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.chessgame;
+package com.trymad.litechess_monolith.chessgame.internal.model;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,6 +6,10 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.api.model.GameMove;
+import com.trymad.litechess_monolith.chessgame.api.model.PlayerInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

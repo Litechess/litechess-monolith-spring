@@ -1,12 +1,13 @@
-package com.trymad.litechess_monolith.chessgame.internal.game.emulator;
+package com.trymad.litechess_monolith.chessgame.internal.emulator.impl.wolfram;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
-import com.trymad.litechess_monolith.chessgame.ChessPiece;
-import com.trymad.litechess_monolith.chessgame.GameMove;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessPiece;
+import com.trymad.litechess_monolith.chessgame.api.model.GameMove;
+import com.trymad.litechess_monolith.chessgame.internal.emulator.ChessPartyEmulator;
 import com.trymad.litechess_monolith.chessgame.internal.model.PlayerColor;
 
 import io.github.wolfraam.chessgame.ChessGame;
@@ -16,6 +17,7 @@ import io.github.wolfraam.chessgame.board.Square;
 import io.github.wolfraam.chessgame.move.Move;
 import io.github.wolfraam.chessgame.result.ChessGameResultType;
 
+@Deprecated
 public class WolframChessPartyEmulator implements ChessPartyEmulator {
 
 	private final ChessGame chessGame;

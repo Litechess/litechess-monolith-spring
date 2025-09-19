@@ -8,18 +8,17 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
-import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
-import com.trymad.litechess_monolith.chessgame.ChessParty;
-import com.trymad.litechess_monolith.chessgame.ChessPartyService;
-import com.trymad.litechess_monolith.chessgame.PlayerInfo;
 import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.api.event.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.api.model.PlayerInfo;
 import com.trymad.litechess_monolith.chessgame.internal.client.UserInfoClient;
-import com.trymad.litechess_monolith.chessgame.internal.game.ChessPartyRepository;
+import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
+import com.trymad.litechess_monolith.chessgame.internal.repository.ChessPartyRepository;
 import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.users.UserInfoDTO;
@@ -31,10 +30,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 // TODO logic when game end
-public class ChessPartyServiceImpl implements ChessPartyService {
+public class ChessPartyService {
 	
 	private final ChessPartyRepository chessPartyRepository;
-	private final LiveGameStore liveGameStore;
+	private final LiveGameService liveGameStore;
 	private final ChessUtilService chessUtilService;
 	private final EventPublisher eventPublisher;
 	private final UserInfoClient userInfoClient;
@@ -76,13 +75,11 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 		return chessPartyRepository.update(chessParty);
 	}
 
-	@Override
 	public ChessParty create(CreatePartyDTO createGameDTO) {
 		return chessPartyRepository.create(createGameDTO);
 	}
 
 	// TODO mapper
-	@Override
 	public ChessPartyDTO getDto(ChessParty chessParty) {
 		return new ChessPartyDTO(
 			chessParty.getId(),
@@ -92,6 +89,17 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 			chessUtilService.getFen(chessParty.getInitFen(), chessParty.getMoveList()),
 			chessParty.getInitFen(),
 			chessParty.getStatus());
+	}
+
+	// TODO mapper
+	private ChessParty getEntity(ChessPartyDTO chessParty) {
+		return new ChessParty(
+			chessParty.id(),
+			chessParty.white(),
+			chessParty.black(),
+			chessParty.moves(),
+			chessParty.initFen(),
+			chessParty.status());
 	}
 
 	private final PlayerInfo getPlayerInfo(UUID id) {
@@ -111,10 +119,9 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 			white,
 			black));
 			
-		eventPublisher.publish(new ChessPartyCreatedEvent(chessParty)); 
+		eventPublisher.publish(new ChessPartyCreatedEvent(this.getDto(chessParty))); 
 	}
 
-	@Override
 	public List<ChessParty> getAll(boolean activeGames) {
 		final List<ChessParty> dbGames = chessPartyRepository.getAll();
         List<ChessParty> result = activeGames ? 
@@ -126,15 +133,13 @@ public class ChessPartyServiceImpl implements ChessPartyService {
 		return result;
 	}
 
-	@Override
 	public boolean stopActiveGame(Long gameId) {
 		return liveGameStore.delete(gameId) == null ? false : true;
 	}
 
-	@Override
 	public void finishGame(GameFinishEvent event) {
-		this.save(event.chessParty());
-		this.stopActiveGame(event.chessParty().getId());
+		this.save(this.getEntity(event.chessParty()));
+		this.stopActiveGame(event.chessParty().id());
 	
 	}
 }

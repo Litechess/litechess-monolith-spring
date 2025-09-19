@@ -1,6 +1,6 @@
 package com.trymad.litechess_monolith.websocket;
 
-import com.trymad.litechess_monolith.chessgame.ChessPiece;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessPiece;
 
 public record MoveRequest(
         String from,

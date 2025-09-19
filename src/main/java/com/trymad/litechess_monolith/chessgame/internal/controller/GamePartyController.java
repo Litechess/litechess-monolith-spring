@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trymad.litechess_monolith.chessgame.ChessPartyService;
 import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessgame.internal.service.ChessPartyService;
 
 import lombok.RequiredArgsConstructor;
 
