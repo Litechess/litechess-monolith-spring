@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.chessgame.internal.game;
+package com.trymad.litechess_monolith.chessgame.internal.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,13 +7,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
-import com.trymad.litechess_monolith.chessgame.ChessParty;
+import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
-import com.trymad.litechess_monolith.chessgame.internal.game.emulator.ChessPartyEmulatorFactory;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.internal.emulator.ChessPartyEmulatorFactory;
+import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.chessgame.internal.service.ChessUtilService;
-import com.trymad.litechess_monolith.chessgame.internal.service.LiveGameStore;
+import com.trymad.litechess_monolith.chessgame.internal.service.LiveGameService;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class InMemoryLiveGameStore implements LiveGameStore {
+public class InMemoryLiveGameStore implements LiveGameService {
 
 	private final Map<Long, LiveGame> liveGames = new ConcurrentHashMap<>();
 	private final ChessPartyEmulatorFactory chessPartyEmulatorFactory;
@@ -68,7 +69,14 @@ public class InMemoryLiveGameStore implements LiveGameStore {
 		// TODO replace to mapper
 		if(liveGame.getStatus() != ChessGameStatus.NOT_FINISHED) {
 			final ChessParty chessParty = liveGame.getChessParty();
-			eventPublisher.publish(new GameFinishEvent(chessParty));
+			eventPublisher.publish(new GameFinishEvent(new ChessPartyDTO(
+			chessParty.getId(),
+			chessParty.getWhite(),
+			chessParty.getBlack(),
+			chessParty.getMoveList(),
+			chessUtilService.getFen(chessParty.getInitFen(), chessParty.getMoveList()),
+			chessParty.getInitFen(),
+			chessParty.getStatus())));
 		}
 
 		return isMoveDone;

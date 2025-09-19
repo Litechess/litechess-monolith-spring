@@ -1,10 +1,10 @@
-package com.trymad.litechess_monolith.chessgame.internal.game;
+package com.trymad.litechess_monolith.chessgame.internal.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
+import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 
 public interface ChessPartyRepository {
 	

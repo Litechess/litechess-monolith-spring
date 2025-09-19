@@ -9,7 +9,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
-import com.trymad.litechess_monolith.chessgame.ChessParty;
+import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.api.event.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
@@ -30,26 +30,26 @@ public class GameMessageSender {
 	private final EventPublisher eventPublisher;
 
 	public void gameCreate(ChessPartyCreatedEvent event) {
-		final GameCreatedDTO gameCreatedDTO = new GameCreatedDTO(event.chessParty().getId());
+		final GameCreatedDTO gameCreatedDTO = new GameCreatedDTO(event.chessParty().id());
 		final Message<GameCreatedDTO> createdGame = MessageBuilder
 			.withPayload(gameCreatedDTO)
 			.setHeader("type", "gameCreated")
 			.build();
 		
 		messagingTemplate.convertAndSendToUser(
-			event.chessParty().getWhite().id().toString(), "/topic/matchmaking/queue", createdGame);
+			event.chessParty().white().id().toString(), "/topic/matchmaking/queue", createdGame);
 		messagingTemplate.convertAndSendToUser(
-			event.chessParty().getBlack().id().toString(), "/topic/matchmaking/queue", createdGame);
+			event.chessParty().black().id().toString(), "/topic/matchmaking/queue", createdGame);
 	}
 
 	public void gameFinish(GameFinishEvent event) {
-		final ChessParty chessParty = event.chessParty();
+		final ChessPartyDTO chessParty = event.chessParty();
 		final Message<GameResultMessage> gameResult = MessageBuilder
-			.withPayload(new GameResultMessage(chessParty.getStatus()))
+			.withPayload(new GameResultMessage(chessParty.status()))
 			.setHeader("type", "gameFinish")
 			.build();
 
-		messagingTemplate.convertAndSend("/topic/game/" + chessParty.getId(), gameResult);
+		messagingTemplate.convertAndSend("/topic/game/" + chessParty.id(), gameResult);
 	}
 
 	public void move(MoveAcceptedEvent event) {

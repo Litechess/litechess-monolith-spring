@@ -10,7 +10,7 @@ import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
-import com.trymad.litechess_monolith.chessgame.GameMove;
+import com.trymad.litechess_monolith.chessgame.api.model.GameMove;
 import com.trymad.litechess_monolith.websocket.MoveRequest;
 
 @Component

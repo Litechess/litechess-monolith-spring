@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.chessgame.internal.game;
+package com.trymad.litechess_monolith.chessgame.internal.repository.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.chessgame.ChessGameStatus;
-import com.trymad.litechess_monolith.chessgame.ChessParty;
 import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
+import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
+import com.trymad.litechess_monolith.chessgame.internal.repository.ChessPartyRepository;
 
 
 @Component
