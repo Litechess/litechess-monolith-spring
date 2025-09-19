@@ -11,7 +11,7 @@ import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.trymad.litechess_monolith.chessgame.api.model.GameMove;
-import com.trymad.litechess_monolith.websocket.MoveRequest;
+import com.trymad.litechess_monolith.websocket.api.dto.MoveRequest;
 
 @Component
 public class ChessLibUtilService implements ChessUtilService {

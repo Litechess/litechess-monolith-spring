@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.matchmaking.internal;
+package com.trymad.litechess_monolith.matchmaking.internal.service.impl;
 
 import java.util.List;
 import java.util.Queue;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
 import com.trymad.litechess_monolith.matchmaking.api.event.QueueLeaveEvent;
+import com.trymad.litechess_monolith.matchmaking.internal.service.MatchmakingQueueService;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 

@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.websocket.internal;
+package com.trymad.litechess_monolith.websocket.internal.service;
 
 import java.util.UUID;
 
@@ -15,8 +15,9 @@ import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.matchmaking.api.event.QueueLeaveEvent;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
-import com.trymad.litechess_monolith.websocket.GameCreatedDTO;
-import com.trymad.litechess_monolith.websocket.MoveRequest;
+import com.trymad.litechess_monolith.websocket.api.dto.GameCreatedDTO;
+import com.trymad.litechess_monolith.websocket.api.dto.MoveRequest;
+import com.trymad.litechess_monolith.websocket.internal.model.GameResultMessage;
 
 import lombok.RequiredArgsConstructor;
 
