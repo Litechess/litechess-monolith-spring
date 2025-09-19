@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.users.internal;
+package com.trymad.litechess_monolith.users.internal.controller;
 
 import java.util.UUID;
 
@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trymad.litechess_monolith.users.UserInfoDTO;
+import com.trymad.litechess_monolith.users.api.dto.UserInfoDTO;
+import com.trymad.litechess_monolith.users.internal.model.UserInfo;
+import com.trymad.litechess_monolith.users.internal.service.UserInfoService;
 
 import lombok.RequiredArgsConstructor;
 

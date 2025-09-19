@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.users;
+package com.trymad.litechess_monolith.users.api.dto;
 
 import java.util.UUID;
 
