@@ -1,8 +1,12 @@
-package com.trymad.litechess_monolith.users.internal;
+package com.trymad.litechess_monolith.users.internal.service;
 
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+
+import com.trymad.litechess_monolith.users.api.dto.UserInfoCreateDTO;
+import com.trymad.litechess_monolith.users.internal.model.UserInfo;
+import com.trymad.litechess_monolith.users.internal.repository.UserInfoRepository;
 
 import lombok.RequiredArgsConstructor;
 

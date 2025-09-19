@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.users.internal;
+package com.trymad.litechess_monolith.users.internal.model;
 
 import java.util.UUID;
 

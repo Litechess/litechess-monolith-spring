@@ -1,10 +1,14 @@
-package com.trymad.litechess_monolith.users.internal;
+package com.trymad.litechess_monolith.users.internal.repository.impl;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Repository;
+
+import com.trymad.litechess_monolith.users.api.dto.UserInfoCreateDTO;
+import com.trymad.litechess_monolith.users.internal.model.UserInfo;
+import com.trymad.litechess_monolith.users.internal.repository.UserInfoRepository;
 
 @Repository
 public class InMemoryUserInfoRepository implements UserInfoRepository {

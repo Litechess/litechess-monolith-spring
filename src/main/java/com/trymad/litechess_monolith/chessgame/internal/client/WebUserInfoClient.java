@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.trymad.litechess_monolith.users.UserInfoDTO;
+import com.trymad.litechess_monolith.users.api.dto.UserInfoDTO;
 
 import lombok.RequiredArgsConstructor;
 
