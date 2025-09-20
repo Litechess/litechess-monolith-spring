@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
@@ -12,26 +11,14 @@ import com.trymad.litechess_monolith.chessgame.api.model.GameMove;
 import com.trymad.litechess_monolith.chessgame.api.model.PlayerInfo;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-@Builder
 @Getter
 @Setter
 @Document
 public class ChessParty {
-
-	@PersistenceCreator
-	public ChessParty(Long id, PlayerInfo white, PlayerInfo black, List<GameMove> moveList, String initFen, ChessGameStatus status) {
-		this.id = id;
-		this.white = white;
-		this.black = black;
-		this.moveList.addAll(moveList != null ? moveList : List.of());
-		this.initFen = initFen;
-		this.status = status;
-	}
 
 	@Id
 	private Long id;
@@ -40,9 +27,11 @@ public class ChessParty {
 
 	private PlayerInfo black;
 
-	private final List<GameMove> moveList = new LinkedList<>();
+	private List<GameMove> moves = new LinkedList<>();
 
 	private String initFen;
+
+	private String currentFen;
 
 	private ChessGameStatus status;
 

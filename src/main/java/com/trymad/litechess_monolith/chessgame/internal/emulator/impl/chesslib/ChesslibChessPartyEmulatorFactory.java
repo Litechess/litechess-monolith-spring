@@ -13,7 +13,7 @@ public class ChesslibChessPartyEmulatorFactory implements ChessPartyEmulatorFact
 
 	@Override
 	public ChessPartyEmulator create(ChessParty chessParty) {
-		return new ChesslibPartyEmulator(chessParty.getMoveList());
+		return new ChesslibPartyEmulator(chessParty.getMoves());
 	}
 	
 }

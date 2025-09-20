@@ -6,8 +6,6 @@ import java.util.Optional;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
-import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.repository.ChessPartyRepository;
 
@@ -16,9 +14,8 @@ import lombok.RequiredArgsConstructor;
 @Component
 @Primary
 @RequiredArgsConstructor
-public class MongoAdapterChessPartyRepository implements ChessPartyRepository {
 
-	private final static String DEFAULT_INIT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+public class MongoAdapterChessPartyRepository implements ChessPartyRepository {
 
 	private final MongoChessPartyRepository mongoChessPartyRepository;
 	private final SequenceGeneratorService sequenceGeneratorService;
@@ -40,21 +37,13 @@ public class MongoAdapterChessPartyRepository implements ChessPartyRepository {
 
 	@Override
 	// check if exists 
-	public ChessParty create(CreatePartyDTO createGameDTO) {
-		final long id = sequenceGeneratorService.generateSequence("chessparty_seq");
-		final ChessParty chessParty = ChessParty.builder()
-			.id(id)
-			.white(createGameDTO.white())
-			.black(createGameDTO.black())
-			.initFen(DEFAULT_INIT_FEN)
-			.status(ChessGameStatus.NOT_FINISHED)
-			.build();
-		return mongoChessPartyRepository.save(chessParty);
-	}
+	public ChessParty save(ChessParty chessParty) {
+		if(chessParty.getId() == null || chessParty.getId() < 0) {
+			final long id = sequenceGeneratorService.generateSequence("chessparty_seq");
+			chessParty.setId(id);
+		}
 
-	@Override
-	public ChessParty update(ChessParty party) {
-		return mongoChessPartyRepository.save(party);
+		return mongoChessPartyRepository.save(chessParty);
 	}
 	
 }

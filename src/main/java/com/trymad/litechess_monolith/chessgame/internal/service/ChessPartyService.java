@@ -1,5 +1,6 @@
 package com.trymad.litechess_monolith.chessgame.internal.service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -8,7 +9,6 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
-import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.api.event.ChessPartyCreatedEvent;
 import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
@@ -16,6 +16,8 @@ import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.api.model.PlayerInfo;
 import com.trymad.litechess_monolith.chessgame.internal.client.UserInfoClient;
+import com.trymad.litechess_monolith.chessgame.internal.mapper.ChessPartyMapper;
+import com.trymad.litechess_monolith.chessgame.internal.mapper.CreateChessPartyMapper;
 import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.chessgame.internal.repository.ChessPartyRepository;
@@ -34,10 +36,12 @@ public class ChessPartyService {
 	
 	private final ChessPartyRepository chessPartyRepository;
 	private final LiveGameService liveGameStore;
-	private final ChessUtilService chessUtilService;
 	private final EventPublisher eventPublisher;
 	private final UserInfoClient userInfoClient;
+	private final ChessPartyMapper mapper;
+	private final CreateChessPartyMapper createMapper;
 
+	private final static String DEFAULT_INIT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	
 	public boolean doMove(MoveEvent moveEvent) {
 		final Long gameId = moveEvent.gameId();
@@ -71,35 +75,19 @@ public class ChessPartyService {
 		return chessPartyRepository.existsById(id);
 	}
 	
-	public ChessParty save(ChessParty chessParty) {
-		return chessPartyRepository.update(chessParty);
+	public ChessParty update(ChessParty chessParty) {
+		return chessPartyRepository.save(chessParty);
 	}
 
 	public ChessParty create(CreatePartyDTO createGameDTO) {
-		return chessPartyRepository.create(createGameDTO);
-	}
+		final ChessParty chessParty = createMapper.toEntity(createGameDTO);
 
-	// TODO mapper
-	public ChessPartyDTO getDto(ChessParty chessParty) {
-		return new ChessPartyDTO(
-			chessParty.getId(),
-			chessParty.getWhite(),
-			chessParty.getBlack(),
-			chessParty.getMoveList(),
-			chessUtilService.getFen(chessParty.getInitFen(), chessParty.getMoveList()),
-			chessParty.getInitFen(),
-			chessParty.getStatus());
-	}
+		chessParty.setMoves(new LinkedList<>());
+		chessParty.setInitFen(DEFAULT_INIT_FEN);
+		chessParty.setCurrentFen(DEFAULT_INIT_FEN);
+		chessParty.setStatus(ChessGameStatus.NOT_FINISHED);
 
-	// TODO mapper
-	private ChessParty getEntity(ChessPartyDTO chessParty) {
-		return new ChessParty(
-			chessParty.id(),
-			chessParty.white(),
-			chessParty.black(),
-			chessParty.moves(),
-			chessParty.initFen(),
-			chessParty.status());
+		return chessPartyRepository.save(chessParty);
 	}
 
 	private final PlayerInfo getPlayerInfo(UUID id) {
@@ -119,7 +107,7 @@ public class ChessPartyService {
 			white,
 			black));
 			
-		eventPublisher.publish(new ChessPartyCreatedEvent(this.getDto(chessParty))); 
+		eventPublisher.publish(new ChessPartyCreatedEvent(mapper.toDto(chessParty))); 
 	}
 
 	public List<ChessParty> getAll(boolean activeGames) {
@@ -138,7 +126,7 @@ public class ChessPartyService {
 	}
 
 	public void finishGame(GameFinishEvent event) {
-		this.save(this.getEntity(event.chessParty()));
+		this.update(mapper.toEntity(event.chessParty()));
 		this.stopActiveGame(event.chessParty().id());
 	
 	}

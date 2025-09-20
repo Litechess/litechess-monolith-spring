@@ -7,10 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.internal.emulator.ChessPartyEmulatorFactory;
+import com.trymad.litechess_monolith.chessgame.internal.mapper.ChessPartyMapper;
 import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.chessgame.internal.service.ChessUtilService;
@@ -27,6 +27,7 @@ public class InMemoryLiveGameStore implements LiveGameService {
 	private final Map<Long, LiveGame> liveGames = new ConcurrentHashMap<>();
 	private final ChessPartyEmulatorFactory chessPartyEmulatorFactory;
 	private final ChessUtilService chessUtilService;
+	private final ChessPartyMapper chessPartyMapper;
 	private final EventPublisher eventPublisher;
 
 	@Override
@@ -66,17 +67,9 @@ public class InMemoryLiveGameStore implements LiveGameService {
 		
 		boolean isMoveDone = liveGame.playMove(chessUtilService.toGameMove(event.moveRequest()), event.playerId());
 
-		// TODO replace to mapper
 		if(liveGame.getStatus() != ChessGameStatus.NOT_FINISHED) {
 			final ChessParty chessParty = liveGame.getChessParty();
-			eventPublisher.publish(new GameFinishEvent(new ChessPartyDTO(
-			chessParty.getId(),
-			chessParty.getWhite(),
-			chessParty.getBlack(),
-			chessParty.getMoveList(),
-			chessUtilService.getFen(chessParty.getInitFen(), chessParty.getMoveList()),
-			chessParty.getInitFen(),
-			chessParty.getStatus())));
+			eventPublisher.publish(new GameFinishEvent(chessPartyMapper.toDto(chessParty)));
 		}
 
 		return isMoveDone;
