@@ -10,6 +10,4 @@ public interface ToEntityMapper<E, D> {
 		return dtos.stream().map(this::toEntity).toList();
 	}
 
-	void updateEntityFromDto(E entity, D dto);
-
 }	
