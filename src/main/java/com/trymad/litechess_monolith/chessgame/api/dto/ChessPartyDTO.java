@@ -11,8 +11,8 @@ public record ChessPartyDTO(
 	PlayerInfo white,
 	PlayerInfo black,
 	List<GameMove> moves,
-	String fen,
 	String initFen,
+	String currentFen,
 	ChessGameStatus status
 ) {
 	

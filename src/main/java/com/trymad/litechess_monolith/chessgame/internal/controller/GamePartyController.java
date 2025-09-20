@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessgame.internal.mapper.ChessPartyMapper;
 import com.trymad.litechess_monolith.chessgame.internal.service.ChessPartyService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,17 +24,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class GamePartyController {
 	
 	private final ChessPartyService chessPartyService;
+	private final ChessPartyMapper mapper;
 
 	@GetMapping("/{id}")
 	public ChessPartyDTO getChessParty(@PathVariable Long id) {
 		System.out.println("PERFORM");
-		return chessPartyService.getDto(chessPartyService.get(id));
+		return mapper.toDto(chessPartyService.get(id));
 	}
 
 
-	// TODO pagination + add mapper
+	// TODO pagination
 	@GetMapping("/shortParty")
 	public List<ChessPartyDTO> getAll(@RequestParam(name = "activeGames", defaultValue = "true") boolean activeGames) {
-		return chessPartyService.getAll(activeGames).stream().map(chessPartyService::getDto).toList();
+		return mapper.toDto(chessPartyService.getAll(activeGames));
 	}
 }

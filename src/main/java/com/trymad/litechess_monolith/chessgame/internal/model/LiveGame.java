@@ -37,8 +37,9 @@ public class LiveGame {
 
 	public ChessParty getChessParty() {
 		chessParty.setStatus(emulator.gameStatus());
-		chessParty.getMoveList().clear();
-		chessParty.getMoveList().addAll(emulator.getMoveList());
+		chessParty.getMoves().clear();
+		chessParty.getMoves().addAll(emulator.getMoveList());
+		chessParty.setCurrentFen(emulator.getFen());
 		return chessParty;
 	}
 

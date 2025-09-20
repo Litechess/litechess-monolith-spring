@@ -8,15 +8,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
-import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessgame.internal.repository.ChessPartyRepository;
 
 
 @Component
 public class InMemoryChessPartyRepository implements ChessPartyRepository {
-	private final static String DEFAULT_INIT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	private final Map<Long, ChessParty> store = new ConcurrentHashMap<>();
 	private Long idSequence = 1l;
 
@@ -31,20 +28,9 @@ public class InMemoryChessPartyRepository implements ChessPartyRepository {
 	}
 
 	@Override
-	public ChessParty update(ChessParty party) {
-		return store.put(party.getId(), party);
-	}
-
-	@Override
-	public ChessParty create(CreatePartyDTO createGameDTO) {
+	public ChessParty save(ChessParty chessParty) {
 		final Long gameId = idSequence++;
-		final ChessParty chessParty = ChessParty.builder()
-				.id(gameId)
-				.white(createGameDTO.white())
-				.black(createGameDTO.black())
-				.initFen(DEFAULT_INIT_FEN)
-				.status(ChessGameStatus.NOT_FINISHED)
-				.build();
+		chessParty.setId(gameId);
 		store.put(gameId, chessParty);
 
 		return chessParty;

@@ -3,7 +3,6 @@ package com.trymad.litechess_monolith.chessgame.internal.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.trymad.litechess_monolith.chessgame.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
 
 public interface ChessPartyRepository {
@@ -14,8 +13,6 @@ public interface ChessPartyRepository {
 
 	boolean existsById(Long id);
 
-	ChessParty create(CreatePartyDTO createGameDTO);
-
-	ChessParty update(ChessParty party);
+	ChessParty save(ChessParty chessParty);
 
 }

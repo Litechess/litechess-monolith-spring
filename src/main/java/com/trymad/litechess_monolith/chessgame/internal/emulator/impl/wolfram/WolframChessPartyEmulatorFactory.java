@@ -11,7 +11,7 @@ public class WolframChessPartyEmulatorFactory implements ChessPartyEmulatorFacto
 
 	@Override
 	public ChessPartyEmulator create(ChessParty chessParty) {
-		return new WolframChessPartyEmulator(chessParty.getMoveList());
+		return new WolframChessPartyEmulator(chessParty.getMoves());
 	}
 	
 }
