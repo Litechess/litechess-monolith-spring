@@ -22,8 +22,12 @@ public class InMemoryUserInfoRepository implements UserInfoRepository {
 		final UserInfo second = new UserInfo(
 			UUID.fromString("ecccb4d8-4fad-45c4-b073-e77b4ec1ddbe"),
 			"OlegNickname");
+		final UserInfo third = new UserInfo(
+			UUID.fromString("e46b3462-1636-4666-893b-c108ad816426"),
+			"VladNickname");
 		db.put(first.getId(), first);
 		db.put(second.getId(), second);
+		db.put(third.getId(), third);
 	}
 
 	@Override

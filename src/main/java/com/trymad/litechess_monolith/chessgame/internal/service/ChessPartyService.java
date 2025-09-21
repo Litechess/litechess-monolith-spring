@@ -16,6 +16,7 @@ import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.chessgame.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessgame.api.model.PlayerInfo;
 import com.trymad.litechess_monolith.chessgame.internal.client.UserInfoClient;
+import com.trymad.litechess_monolith.chessgame.internal.controller.filter.ChessPartyFilter;
 import com.trymad.litechess_monolith.chessgame.internal.mapper.ChessPartyMapper;
 import com.trymad.litechess_monolith.chessgame.internal.mapper.CreateChessPartyMapper;
 import com.trymad.litechess_monolith.chessgame.internal.model.ChessParty;
@@ -110,13 +111,22 @@ public class ChessPartyService {
 		eventPublisher.publish(new ChessPartyCreatedEvent(mapper.toDto(chessParty))); 
 	}
 
-	public List<ChessParty> getAll(boolean activeGames) {
+	public List<ChessParty> get(ChessPartyFilter filter) {
 		final List<ChessParty> dbGames = chessPartyRepository.getAll();
-        List<ChessParty> result = activeGames ? 
-		Stream.concat(liveGameStore.getAll().stream().map(LiveGame::getChessParty), dbGames.stream())
+
+        List<ChessParty> result = Stream.concat(liveGameStore.getAll().stream()
+			.map(LiveGame::getChessParty), dbGames.stream())
             .distinct()
-            .collect(Collectors.toList()) 
-		: dbGames;
+			.filter(chessParty -> {
+				final UUID whiteId = chessParty.getWhite().id();
+				final UUID blackId = chessParty.getBlack().id();
+				
+				final boolean isOwnerContains = (whiteId.equals(filter.ownerId()) || blackId.equals(filter.ownerId())) || filter.ownerId() == null;
+				final boolean isOponentContains = (whiteId.equals(filter.oponentId()) || blackId.equals(filter.oponentId())) || filter.oponentId() == null;
+				
+				return isOponentContains && isOwnerContains;
+			})
+            .collect(Collectors.toList());
 		
 		return result;
 	}

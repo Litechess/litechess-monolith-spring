@@ -5,12 +5,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessgame.internal.controller.filter.ChessPartyFilter;
 import com.trymad.litechess_monolith.chessgame.internal.mapper.ChessPartyMapper;
 import com.trymad.litechess_monolith.chessgame.internal.service.ChessPartyService;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +36,12 @@ public class GamePartyController {
 
 
 	// TODO pagination
-	@GetMapping("/shortParty")
-	public List<ChessPartyDTO> getAll(@RequestParam(name = "activeGames", defaultValue = "true") boolean activeGames) {
-		return mapper.toDto(chessPartyService.getAll(activeGames));
+	@GetMapping
+	public List<ChessPartyDTO> getAll(
+		@RequestParam(required = false) UUID ownerId,
+		@RequestParam(required = false) UUID oponentId) {
+		final ChessPartyFilter filter = new ChessPartyFilter(ownerId, oponentId);
+
+		return mapper.toDto(chessPartyService.get(filter));
 	}
 }
