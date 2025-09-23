@@ -1,6 +1,5 @@
 package com.trymad.litechess_monolith.chessparty.internal.service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;

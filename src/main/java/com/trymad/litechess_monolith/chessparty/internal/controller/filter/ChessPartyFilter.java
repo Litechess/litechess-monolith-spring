@@ -4,5 +4,4 @@ import java.util.UUID;
 
 public record ChessPartyFilter(UUID ownerId, UUID oponentId) {
 
-
 }

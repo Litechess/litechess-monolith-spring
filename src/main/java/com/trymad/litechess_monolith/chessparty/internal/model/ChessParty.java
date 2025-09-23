@@ -1,6 +1,5 @@
 package com.trymad.litechess_monolith.chessparty.internal.model;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class ChessParty {
 
 	private List<GameMove> moves = new LinkedList<>();
 
-	private List<Duration> timerHistory = new ArrayList<>();
+	private List<Long> timerHistory = new ArrayList<>();
 
 	private TimeControl timeControl;
 
