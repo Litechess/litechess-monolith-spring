@@ -1,0 +1,121 @@
+package com.trymad.litechess_monolith.livegame.internal.service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import org.springframework.stereotype.Component;
+
+import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
+import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
+import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
+import com.trymad.litechess_monolith.livegame.internal.emulator.ChessPartyEmulator;
+import com.trymad.litechess_monolith.livegame.internal.mapper.MoveMapper;
+import com.trymad.litechess_monolith.livegame.internal.model.GameTimer;
+import com.trymad.litechess_monolith.livegame.internal.model.LiveGame;
+import com.trymad.litechess_monolith.livegame.internal.model.TimerHistory;
+import com.trymad.litechess_monolith.livegame.internal.repository.LiveGameRepository;
+import com.trymad.litechess_monolith.shared.event.EventPublisher;
+import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
+
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+public class LiveGameService  {
+
+	private final LiveGameRepository liveGameRepository;
+	
+	private final GameTimeService gameTimeService;
+	private final ChessPartyEmulatorService emulatorService;
+
+	private final MoveMapper moveMapper;
+
+	private final EventPublisher eventPublisher;
+
+	public LiveGame create(ChessPartyDTO chessParty) {
+		if(chessParty.status() != ChessGameStatus.NOT_FINISHED) {
+			throw new IllegalStateException("Can't create live game for finished party: " + chessParty.id());
+		}
+
+		final Optional<LiveGame> liveGame = liveGameRepository.findById(chessParty.id());
+		return liveGame.orElseGet(() -> {
+			final GameTimer gameTimer = 
+				gameTimeService.createTimer(chessParty.timeControl(), new TimerHistory(chessParty.timerHistory()));
+			final LiveGame newLiveGame = new LiveGame(chessParty, gameTimer);
+			emulatorService.createEmulator(chessParty.id()).setPosition(chessParty.moves());
+
+			final LiveGame gameFromRepo = liveGameRepository.save(newLiveGame);
+			gameTimeService.startTimer(chessParty.id(), gameTimer, whenTimeout(chessParty.id(), gameTimer));
+			return gameFromRepo;
+		});
+	}
+
+	public LiveGame get(Long id) {
+		return liveGameRepository.findById(id).orElseThrow(
+			() -> new NoSuchElementException("Live game " + id + "not found"));
+	}
+
+	public void delete(Long id) {
+		liveGameRepository.delete(id);
+	}
+
+	public boolean contains(Long id) {
+		return liveGameRepository.existsById(id);
+	}
+
+	public List<LiveGame> getAll() {
+		return liveGameRepository.findAll();
+	}
+
+	public void playMove(MoveEvent event) {
+		final LiveGame liveGame = this.get(event.gameId());
+		if(event.playerId().equals(liveGame.getPlayerColor(liveGame.getCurrentTurnColor())) == false) {
+			throw new IllegalStateException("It's not player turn: " + event.playerId());
+		}
+
+		final ChessPartyEmulator emulator = emulatorService.getEmulator(liveGame.getId());
+
+		if(emulator.gameStatus() != ChessGameStatus.NOT_FINISHED) {
+			this.finishGame(liveGame.getId(), emulator.gameStatus());
+			return;
+		}
+
+		final GameMove move = emulator.move(moveMapper.toEntity(event.moveRequest()));
+		liveGame.applyMove(move);
+
+		if(liveGame.getTimer() != null) {
+			final GameTimer gameTimer = liveGame.getTimer();
+			final Runnable whenTimeout = whenTimeout(liveGame.getId(), gameTimer);
+			gameTimeService.startTimer(liveGame.getId(), gameTimer, whenTimeout);
+		}
+
+		final MoveAcceptedEvent acceptedMoveEvent = 
+			new MoveAcceptedEvent(event.moveRequest(), event.gameId(), event.playerId());
+		eventPublisher.publish(acceptedMoveEvent);
+
+		liveGameRepository.save(liveGame);
+
+		if(emulator.gameStatus() != ChessGameStatus.NOT_FINISHED) {
+			this.finishGame(liveGame.getId(), emulator.gameStatus());
+			return;
+		}
+	}
+
+	private Runnable whenTimeout(Long gameId, GameTimer gameTimer) {
+		return () -> {
+			final PlayerColor winner = gameTimer.getCurrentTurn().flip();
+			final ChessGameStatus status = winner == PlayerColor.WHITE ? 
+				ChessGameStatus.WIN_WHITE : ChessGameStatus.WIN_BLACK;
+			finishGame(gameId, status);
+		};
+	}
+
+	// finish game
+	public void finishGame(Long gameId, ChessGameStatus status) {
+		liveGameRepository.delete(gameId);
+		
+	}
+}

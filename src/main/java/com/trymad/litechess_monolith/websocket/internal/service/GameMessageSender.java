@@ -9,10 +9,10 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
-import com.trymad.litechess_monolith.chessgame.api.dto.ChessPartyDTO;
-import com.trymad.litechess_monolith.chessgame.api.event.ChessPartyCreatedEvent;
-import com.trymad.litechess_monolith.chessgame.api.event.GameFinishEvent;
-import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
+import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessparty.api.event.GameCreatedEvent;
+import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
+import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.matchmaking.api.event.QueueLeaveEvent;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.dto.GameCreatedDTO;
@@ -30,7 +30,7 @@ public class GameMessageSender {
 	private final SimpMessagingTemplate messagingTemplate;
 	private final EventPublisher eventPublisher;
 
-	public void gameCreate(ChessPartyCreatedEvent event) {
+	public void gameCreate(GameCreatedEvent event) {
 		final GameCreatedDTO gameCreatedDTO = new GameCreatedDTO(event.chessParty().id());
 		final Message<GameCreatedDTO> createdGame = MessageBuilder
 			.withPayload(gameCreatedDTO)

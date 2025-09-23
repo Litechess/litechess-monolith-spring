@@ -1,0 +1,75 @@
+package com.trymad.litechess_monolith.livegame.internal.model;
+
+import java.util.EnumMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
+import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
+import com.trymad.litechess_monolith.chessparty.api.model.TimeControlType;
+
+public class LiveGame {
+
+	private final Long id;
+	private final List<GameMove> moves = new LinkedList<>();
+	private final Map<PlayerColor, UUID> playerSides = new EnumMap<>(PlayerColor.class);
+	private final TimerHistory timerHistory;
+	private final GameTimer gameTimer;
+
+	public LiveGame(ChessPartyDTO chessParty, GameTimer gameTimer) {
+		this.id = chessParty.id();
+		this.moves.addAll(chessParty.moves());
+
+		final boolean isTimeConrolledGame = chessParty.timeControl().getType() != TimeControlType.NO_CONTROL;
+		if(isTimeConrolledGame && gameTimer == null) {
+			throw new IllegalArgumentException("GameTimer must be provided for time controlled games");
+		}
+
+		if(isTimeConrolledGame) {
+			this.timerHistory = new TimerHistory(chessParty.timerHistory());
+			this.gameTimer = gameTimer;
+		} else {
+			this.timerHistory = null;
+			this.gameTimer = null;
+		}
+
+		playerSides.put(PlayerColor.WHITE, chessParty.white().id());
+		playerSides.put(PlayerColor.BLACK, chessParty.black().id());
+	}
+
+	public void applyMove(GameMove move) {
+		moves.add(move);
+
+		if(gameTimer != null) {
+			timerHistory.addTime(gameTimer.getRemainingTimeForCurrentPlayer());
+			gameTimer.applyMove();
+		}
+	}
+
+	public PlayerColor getCurrentTurnColor() {
+		return moves.size() % 2 == 0 ? PlayerColor.WHITE : PlayerColor.BLACK;
+	}
+
+	public UUID getPlayerColor(PlayerColor color) {
+		return playerSides.get(color);
+	}
+
+	public GameTimer getTimer() {
+		return gameTimer;
+	}
+
+	public List<GameMove> getMoves() {
+		return moves;
+	}
+
+	public TimerHistory getTimerHistory() {
+		return timerHistory;
+	}
+
+	public Long getId() {
+		return this.id;
+	}
+}
