@@ -53,7 +53,7 @@ public class LiveGame {
 		return moves.size() % 2 == 0 ? PlayerColor.WHITE : PlayerColor.BLACK;
 	}
 
-	public UUID getPlayerColor(PlayerColor color) {
+	public UUID getPlayer(PlayerColor color) {
 		return playerSides.get(color);
 	}
 
@@ -67,6 +67,10 @@ public class LiveGame {
 
 	public TimerHistory getTimerHistory() {
 		return timerHistory;
+	}
+
+	public Map<PlayerColor, UUID> getPlayerSides() {
+		return playerSides;
 	}
 
 	public Long getId() {

@@ -11,6 +11,7 @@ import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
+import com.trymad.litechess_monolith.livegame.internal.controller.filter.LiveGameFilter;
 import com.trymad.litechess_monolith.livegame.internal.emulator.ChessPartyEmulator;
 import com.trymad.litechess_monolith.livegame.internal.mapper.MoveMapper;
 import com.trymad.litechess_monolith.livegame.internal.model.GameTimer;
@@ -58,6 +59,10 @@ public class LiveGameService  {
 			() -> new NoSuchElementException("Live game " + id + "not found"));
 	}
 
+	public List<LiveGame> get(LiveGameFilter filter) {
+		return liveGameRepository.findAll(filter);
+	}
+
 	public void delete(Long id) {
 		liveGameRepository.delete(id);
 	}
@@ -70,9 +75,10 @@ public class LiveGameService  {
 		return liveGameRepository.findAll();
 	}
 
+	// need refactor with emulator when microservice migration
 	public void playMove(MoveEvent event) {
 		final LiveGame liveGame = this.get(event.gameId());
-		if(event.playerId().equals(liveGame.getPlayerColor(liveGame.getCurrentTurnColor())) == false) {
+		if(event.playerId().equals(liveGame.getPlayer(liveGame.getCurrentTurnColor())) == false) {
 			throw new IllegalStateException("It's not player turn: " + event.playerId());
 		}
 
