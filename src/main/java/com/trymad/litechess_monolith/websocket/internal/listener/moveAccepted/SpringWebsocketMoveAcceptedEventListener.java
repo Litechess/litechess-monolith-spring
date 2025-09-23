@@ -3,7 +3,7 @@ package com.trymad.litechess_monolith.websocket.internal.listener.moveAccepted;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.chessgame.api.event.MoveAcceptedEvent;
+import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.shared.event.EventListener;
 import com.trymad.litechess_monolith.websocket.internal.service.GameMessageSender;
 
