@@ -11,13 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimerHistory {
 	
-	private final List<Duration> history = new ArrayList<>();
+	private final List<Long> history = new ArrayList<>();
 
-	public TimerHistory(List<Duration> history) {
+	public TimerHistory(List<Long> history) {
 		this.history.addAll(history);
 	}
 
 	public void addTime(Duration duration) {
+		history.add(duration.toMillis());
+	}
+
+	public void addTime(Long duration) {
 		history.add(duration);
 	}
 
@@ -28,9 +32,13 @@ public class TimerHistory {
 		}
 		
 		if(history.size() % 2 == 0) {
-			return side == PlayerColor.WHITE ? history.get(history.size() - 2) : history.get(history.size() - 1);
+			return side == PlayerColor.WHITE ? 
+				Duration.ofMillis(history.get(history.size() - 2)) : 
+				Duration.ofMillis(history.get(history.size() - 1));
 		} else {
-			return side == PlayerColor.WHITE ? history.get(history.size() - 1) : history.get(history.size() - 2);
+			return side == PlayerColor.WHITE ? 
+				Duration.ofMillis(history.get(history.size() - 1)) : 
+				Duration.ofMillis(history.get(history.size() - 2));
 		}
 	}
 
@@ -46,7 +54,7 @@ public class TimerHistory {
 		return history.toString();
 	}
 
-	public List<Duration> getAsList() {
+	public List<Long> getAsList() {
 		return new ArrayList<>(history);
 	}
 

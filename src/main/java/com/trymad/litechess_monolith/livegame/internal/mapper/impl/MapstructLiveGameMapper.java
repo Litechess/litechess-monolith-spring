@@ -1,6 +1,5 @@
 package com.trymad.litechess_monolith.livegame.internal.mapper.impl;
 
-import java.time.Duration;
 import java.util.List;
 
 import org.mapstruct.Mapper;
@@ -15,6 +14,6 @@ public interface MapstructLiveGameMapper {
 	LiveGameDTO toDto(LiveGame entity);
 
 	default List<Long> map(TimerHistory history) {
-		return history.getAsList().stream().map(Duration::toMillis).toList();
+		return history.getAsList();
 	}
 }

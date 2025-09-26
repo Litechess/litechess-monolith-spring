@@ -2,8 +2,8 @@ package com.trymad.litechess_monolith.livegame.internal.model;
 
 import java.time.Duration;
 
+import com.trymad.litechess_monolith.chessparty.api.dto.TimeControlDTO;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
-import com.trymad.litechess_monolith.chessparty.api.model.TimeControl;
 
 public class GameTimer {
 
@@ -12,12 +12,12 @@ public class GameTimer {
     private long increment;  
     private PlayerColor currentTurn;
     private long lastMoveTimestamp;
-    private final TimeControl timeControl;
+    private final TimeControlDTO timeControl;
 
-    public GameTimer(Duration whiteTime, Duration blackTime, PlayerColor currentTurn, TimeControl timeControl) {
+    public GameTimer(Duration whiteTime, Duration blackTime, PlayerColor currentTurn, TimeControlDTO timeControl) {
         this.whiteTime = whiteTime.toMillis();
         this.blackTime = blackTime.toMillis();
-        this.increment = timeControl.getIncrement().toMillis();
+        this.increment = timeControl.increment();
         this.lastMoveTimestamp = System.currentTimeMillis();
         this.timeControl = timeControl;
         this.currentTurn = currentTurn;
@@ -70,7 +70,7 @@ public class GameTimer {
         return Duration.ofMillis(blackTime);
     }
 
-    public TimeControl getTimeControl() {
+    public TimeControlDTO getTimeControl() {
         return timeControl;
     }
 }

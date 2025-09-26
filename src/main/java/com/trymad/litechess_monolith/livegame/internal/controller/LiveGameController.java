@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trymad.litechess_monolith.livegame.api.dto.LiveGameDTO;
 import com.trymad.litechess_monolith.livegame.internal.controller.filter.LiveGameFilter;
-import com.trymad.litechess_monolith.livegame.internal.mapper.LiveGameDtoMapper;
+import com.trymad.litechess_monolith.livegame.internal.mapper.LiveGameMapper;
 import com.trymad.litechess_monolith.livegame.internal.service.LiveGameService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/livegames")
 public class LiveGameController {
 	
-	private final LiveGameDtoMapper mapper;
+	private final LiveGameMapper mapper;
 	private final LiveGameService liveGameService;
 
 	@GetMapping("/{id}")
