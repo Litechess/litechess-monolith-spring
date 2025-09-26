@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Component;
 
+import com.trymad.litechess_monolith.chessparty.api.dto.TimeControlDTO;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
-import com.trymad.litechess_monolith.chessparty.api.model.TimeControl;
 import com.trymad.litechess_monolith.livegame.internal.model.GameTimer;
 import com.trymad.litechess_monolith.livegame.internal.model.TimerHistory;
 import com.trymad.litechess_monolith.livegame.internal.service.GameTimeService;
@@ -30,12 +30,12 @@ public class ScheduleQueueGameTimeServiceImpl implements GameTimeService{
 	}
 
 	@Override
-	public GameTimer createTimer(TimeControl timeControl, TimerHistory timerHistory) {
+	public GameTimer createTimer(TimeControlDTO timeControl, TimerHistory timerHistory) {
 		final Duration lastTimerWhite = timerHistory.getLastTimerValue(PlayerColor.WHITE);
 		final Duration lastTimerBlack = timerHistory.getLastTimerValue(PlayerColor.WHITE);
 
-		final Duration whiteTime = lastTimerWhite != null ? lastTimerWhite : timeControl.getInitTime();
-		final Duration blackTime = lastTimerBlack != null ? lastTimerBlack : timeControl.getInitTime();
+		final Duration whiteTime = lastTimerWhite != null ? lastTimerWhite : Duration.ofMillis(timeControl.initTime());
+		final Duration blackTime = lastTimerBlack != null ? lastTimerBlack : Duration.ofMillis(timeControl.initTime());
 		final PlayerColor currentTurn = timerHistory.getLastTimedPlayer() != null ? 
 			PlayerColor.WHITE : timerHistory.getLastTimedPlayer().flip();
 

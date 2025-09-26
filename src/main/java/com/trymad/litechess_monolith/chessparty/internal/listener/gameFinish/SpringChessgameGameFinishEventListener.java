@@ -20,7 +20,7 @@ public class SpringChessgameGameFinishEventListener implements EventListener<Gam
 	@org.springframework.context.event.EventListener
 	@Async
 	public void handle(GameFinishEvent event) {
-		chessPartyService.finishGame(event);
+		chessPartyService.update(event);
 	}
 	
 }

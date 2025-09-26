@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerInfo;
-import com.trymad.litechess_monolith.chessparty.api.model.TimeControl;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

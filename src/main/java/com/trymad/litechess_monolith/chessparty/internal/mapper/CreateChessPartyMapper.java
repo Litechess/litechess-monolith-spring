@@ -1,14 +1,9 @@
 package com.trymad.litechess_monolith.chessparty.internal.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-
 import com.trymad.litechess_monolith.chessparty.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessparty.internal.model.ChessParty;
+import com.trymad.litechess_monolith.shared.mapper.ToEntityMapper;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface CreateChessPartyMapper {
-	
-	ChessParty toEntity(CreatePartyDTO dto);
+public interface CreateChessPartyMapper extends ToEntityMapper<ChessParty, CreatePartyDTO> {
 
 }

@@ -5,12 +5,9 @@ import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
-import com.trymad.litechess_monolith.matchmaking.api.event.QueueLeaveEvent;
 import com.trymad.litechess_monolith.matchmaking.internal.service.MatchmakingQueueService;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
@@ -19,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@Deprecated
 public class SimpleMatchmakingQueueService implements MatchmakingQueueService {
 
 	private Queue<UUID> queue = new LinkedBlockingQueue<>();
@@ -48,12 +46,4 @@ public class SimpleMatchmakingQueueService implements MatchmakingQueueService {
 
 		queue.remove(playerId);
 	}
-
-	@Async
-	@EventListener
-	void on(QueueLeaveEvent event) {
-		System.out.println("leave");
-		this.leave(event.playerId());
-	}
-	
 }

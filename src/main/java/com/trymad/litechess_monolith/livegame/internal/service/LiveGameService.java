@@ -11,8 +11,10 @@ import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
+import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.livegame.internal.controller.filter.LiveGameFilter;
 import com.trymad.litechess_monolith.livegame.internal.emulator.ChessPartyEmulator;
+import com.trymad.litechess_monolith.livegame.internal.mapper.LiveGameMapper;
 import com.trymad.litechess_monolith.livegame.internal.mapper.MoveMapper;
 import com.trymad.litechess_monolith.livegame.internal.model.GameTimer;
 import com.trymad.litechess_monolith.livegame.internal.model.LiveGame;
@@ -33,6 +35,7 @@ public class LiveGameService  {
 	private final ChessPartyEmulatorService emulatorService;
 
 	private final MoveMapper moveMapper;
+	private final LiveGameMapper liveGameMapper;
 
 	private final EventPublisher eventPublisher;
 
@@ -119,9 +122,12 @@ public class LiveGameService  {
 		};
 	}
 
-	// finish game
 	public void finishGame(Long gameId, ChessGameStatus status) {
+		final LiveGame game = this.get(gameId);
+		final GameFinishEvent event = new GameFinishEvent(liveGameMapper.toDto(game), status);
+		eventPublisher.publish(event);
+
 		liveGameRepository.delete(gameId);
-		
+		emulatorService.deleteEmulator(gameId);
 	}
 }

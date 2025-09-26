@@ -23,7 +23,7 @@ public class LiveGame {
 		this.id = chessParty.id();
 		this.moves.addAll(chessParty.moves());
 
-		final boolean isTimeConrolledGame = chessParty.timeControl().getType() != TimeControlType.NO_CONTROL;
+		final boolean isTimeConrolledGame = chessParty.timeControl().type() != TimeControlType.NO_CONTROL;
 		if(isTimeConrolledGame && gameTimer == null) {
 			throw new IllegalArgumentException("GameTimer must be provided for time controlled games");
 		}
