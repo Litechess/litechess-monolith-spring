@@ -69,7 +69,15 @@ public class ChessPartyService {
 		return this.update(chessParty);
 	}
 
-	public ChessParty create(CreatePartyDTO createGameDTO) {
+	public void delete(Long id) {
+		chessPartyRepository.delete(id);
+	}
+
+	public void deleteAll(List<ChessParty> parties) {
+		chessPartyRepository.deleteAll(parties);
+	}
+
+	public ChessParty save(CreatePartyDTO createGameDTO) {
 		final ChessParty chessParty = createMapper.toEntity(createGameDTO);
 
 		chessParty.setInitFen(DEFAULT_INIT_FEN);
@@ -93,7 +101,7 @@ public class ChessPartyService {
 		final TimeControlDTO timeControl = event.gameRequest().timeControl();
 		
 
-		final ChessParty chessParty = this.create(new CreatePartyDTO(
+		final ChessParty chessParty = this.save(new CreatePartyDTO(
 			white,
 			black,
 			timeControl));

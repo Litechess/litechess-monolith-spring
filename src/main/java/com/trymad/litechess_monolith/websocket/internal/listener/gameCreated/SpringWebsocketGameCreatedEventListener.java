@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.websocket.internal.listener.chessPartyCreated;
+package com.trymad.litechess_monolith.websocket.internal.listener.gameCreated;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 @Component
-public class SpringWebsocketChessPartyCreatedEventListener implements EventListener<GameCreatedEvent> {
+public class SpringWebsocketGameCreatedEventListener implements EventListener<GameCreatedEvent> {
 
 	private final GameMessageSender gameMessageSender;
 

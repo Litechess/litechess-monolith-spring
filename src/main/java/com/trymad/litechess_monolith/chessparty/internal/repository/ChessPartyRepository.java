@@ -15,4 +15,8 @@ public interface ChessPartyRepository {
 
 	ChessParty save(ChessParty chessParty);
 
+	void delete(Long id);
+
+	void deleteAll(List<ChessParty> parties);
+
 }

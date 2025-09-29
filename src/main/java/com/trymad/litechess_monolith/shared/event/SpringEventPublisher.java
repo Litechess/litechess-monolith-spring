@@ -1,10 +1,7 @@
-package com.trymad.litechess_monolith.infrastructure.event;
+package com.trymad.litechess_monolith.shared.event;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-
-import com.trymad.litechess_monolith.shared.event.Event;
-import com.trymad.litechess_monolith.shared.event.EventPublisher;
 
 import lombok.RequiredArgsConstructor;
 
