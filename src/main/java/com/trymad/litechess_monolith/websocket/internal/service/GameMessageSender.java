@@ -1,20 +1,21 @@
 package com.trymad.litechess_monolith.websocket.internal.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessparty.api.event.GameCreatedEvent;
 import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
+import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
+import com.trymad.litechess_monolith.livegame.api.dto.LiveGameDTO;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
-import com.trymad.litechess_monolith.matchmaking.api.event.QueueLeaveEvent;
-import com.trymad.litechess_monolith.shared.event.EventPublisher;
+import com.trymad.litechess_monolith.livegame.api.event.LiveGameStartEvent;
 import com.trymad.litechess_monolith.websocket.api.dto.GameCreatedDTO;
 import com.trymad.litechess_monolith.websocket.api.dto.MoveRequest;
 import com.trymad.litechess_monolith.websocket.internal.model.GameResultMessage;
@@ -28,29 +29,44 @@ import lombok.RequiredArgsConstructor;
 public class GameMessageSender {
 	
 	private final SimpMessagingTemplate messagingTemplate;
-	private final EventPublisher eventPublisher;
 
 	public void gameCreate(GameCreatedEvent event) {
-		final GameCreatedDTO gameCreatedDTO = new GameCreatedDTO(event.chessParty().id());
+		final ChessPartyDTO chessParty = event.chessParty();
+		final List<UUID> users = new ArrayList<>();
+		users.add(chessParty.black().id());
+		users.add(chessParty.white().id());
+
+		gameCreate(chessParty.id(), users);
+
+	}
+
+	public void gameCreate(LiveGameStartEvent event) {
+		final LiveGameDTO liveGame = event.dto();
+		final List<UUID> users = new ArrayList<>();
+		users.add(liveGame.playerSides().get(PlayerColor.WHITE));
+		users.add(liveGame.playerSides().get(PlayerColor.BLACK));
+
+		gameCreate(liveGame.id(), users);
+	}
+	
+	private void gameCreate(Long id, List<UUID> users) {
+		final GameCreatedDTO gameCreatedDTO = new GameCreatedDTO(id);
 		final Message<GameCreatedDTO> createdGame = MessageBuilder
 			.withPayload(gameCreatedDTO)
 			.setHeader("type", "gameCreated")
 			.build();
 		
-		messagingTemplate.convertAndSendToUser(
-			event.chessParty().white().id().toString(), "/topic/matchmaking/queue", createdGame);
-		messagingTemplate.convertAndSendToUser(
-			event.chessParty().black().id().toString(), "/topic/matchmaking/queue", createdGame);
+		users.forEach(user -> messagingTemplate.convertAndSendToUser(
+			String.valueOf(id), "/topic/matchmaking/queue", createdGame));
 	}
 
 	public void gameFinish(GameFinishEvent event) {
-		final ChessPartyDTO chessParty = event.chessParty();
 		final Message<GameResultMessage> gameResult = MessageBuilder
-			.withPayload(new GameResultMessage(chessParty.status()))
+			.withPayload(new GameResultMessage(event.status()))
 			.setHeader("type", "gameFinish")
 			.build();
 
-		messagingTemplate.convertAndSend("/topic/game/" + chessParty.id(), gameResult);
+		messagingTemplate.convertAndSend("/topic/game/" + event.finishedGame().id(), gameResult);
 	}
 
 	public void move(MoveAcceptedEvent event) {
@@ -61,10 +77,4 @@ public class GameMessageSender {
 		messagingTemplate.convertAndSend("/topic/game/" + event.gameId(), message);
 	}
 
-	// TODO convert to app event
-	@EventListener
-	void on(SessionUnsubscribeEvent event) {
-		eventPublisher.publish(new QueueLeaveEvent(UUID.fromString(event.getUser().getName())));
-	} 
-	
 }

@@ -2,7 +2,6 @@ package com.trymad.litechess_monolith.livegame.internal.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -12,6 +11,7 @@ import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
+import com.trymad.litechess_monolith.livegame.api.event.LiveGameStartEvent;
 import com.trymad.litechess_monolith.livegame.internal.controller.filter.LiveGameFilter;
 import com.trymad.litechess_monolith.livegame.internal.emulator.ChessPartyEmulator;
 import com.trymad.litechess_monolith.livegame.internal.mapper.LiveGameMapper;
@@ -44,17 +44,18 @@ public class LiveGameService  {
 			throw new IllegalStateException("Can't create live game for finished party: " + chessParty.id());
 		}
 
-		final Optional<LiveGame> liveGame = liveGameRepository.findById(chessParty.id());
-		return liveGame.orElseGet(() -> {
-			final GameTimer gameTimer = 
-				gameTimeService.createTimer(chessParty.timeControl(), new TimerHistory(chessParty.timerHistory()));
-			final LiveGame newLiveGame = new LiveGame(chessParty, gameTimer);
-			emulatorService.createEmulator(chessParty.id()).setPosition(chessParty.moves());
+		final GameTimer gameTimer = 
+			gameTimeService.createTimer(chessParty.timeControl(), new TimerHistory(chessParty.timerHistory()));
+		final LiveGame newLiveGame = new LiveGame(chessParty, gameTimer);
+		emulatorService.createEmulator(chessParty.id()).setPosition(chessParty.moves());
 
-			final LiveGame gameFromRepo = liveGameRepository.save(newLiveGame);
-			gameTimeService.startTimer(chessParty.id(), gameTimer, whenTimeout(chessParty.id(), gameTimer));
-			return gameFromRepo;
-		});
+		final LiveGame gameFromRepo = liveGameRepository.save(newLiveGame);
+		gameTimeService.startTimer(chessParty.id(), gameTimer, whenTimeout(chessParty.id(), gameTimer));
+
+		final LiveGameStartEvent event = new LiveGameStartEvent(liveGameMapper.toDto(gameFromRepo));
+		eventPublisher.publish(event);
+		
+		return gameFromRepo;
 	}
 
 	public LiveGame get(Long id) {

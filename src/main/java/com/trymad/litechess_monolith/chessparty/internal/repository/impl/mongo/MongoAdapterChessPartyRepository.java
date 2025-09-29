@@ -45,5 +45,15 @@ public class MongoAdapterChessPartyRepository implements ChessPartyRepository {
 
 		return mongoChessPartyRepository.save(chessParty);
 	}
+
+	@Override
+	public void delete(Long id) {
+		mongoChessPartyRepository.deleteById(id);
+	}
+
+	@Override
+	public void deleteAll(List<ChessParty> parties) {
+		mongoChessPartyRepository.deleteAll(parties);
+	}
 	
 }

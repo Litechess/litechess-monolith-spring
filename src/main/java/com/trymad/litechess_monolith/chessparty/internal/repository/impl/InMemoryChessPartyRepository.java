@@ -42,5 +42,15 @@ public class InMemoryChessPartyRepository implements ChessPartyRepository {
 		parties.addAll(store.values());
 		return parties;
 	}
+
+	@Override
+	public void delete(Long id) {
+		store.remove(id);
+	}
+
+	@Override
+	public void deleteAll(List<ChessParty> parties) {
+		parties.stream().map(ChessParty::getId).forEach(store::remove);
+	}
 	
 }
