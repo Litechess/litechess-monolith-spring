@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessparty.internal.controller.filter.ChessPartyFilter;
 import com.trymad.litechess_monolith.chessparty.internal.mapper.ChessPartyMapper;
+import com.trymad.litechess_monolith.chessparty.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessparty.internal.service.ChessPartyService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,8 @@ public class GamePartyController {
 	@GetMapping("/{id}")
 	public ChessPartyDTO getChessParty(@PathVariable Long id) {
 		System.out.println("PERFORM");
-		return mapper.toDto(chessPartyService.get(id));
+		final ChessParty chessParty = chessPartyService.get(id);
+		return mapper.toDto(chessParty);
 	}
 
 

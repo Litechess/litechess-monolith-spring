@@ -38,7 +38,8 @@ public class InMemoryLiveGameRepository implements LiveGameRepository {
 
 	@Override
 	public LiveGame save(LiveGame liveGame) {
-		return store.put(liveGame.getId(), liveGame);
+		store.put(liveGame.getId(), liveGame);
+		return liveGame;
 	}
 
 	@Override

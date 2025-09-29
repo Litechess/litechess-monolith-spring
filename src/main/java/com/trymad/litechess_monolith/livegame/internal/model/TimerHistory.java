@@ -44,7 +44,7 @@ public class TimerHistory {
 
 	public PlayerColor getLastTimedPlayer() {
 		if(history.isEmpty()) {
-			return null;
+			return PlayerColor.WHITE;
 		}
 		return history.size() % 2 == 0 ? PlayerColor.BLACK : PlayerColor.WHITE;
 	}
