@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,8 @@ public class ScheduleQueueGameTimeServiceImpl implements GameTimeService{
 	private final ScheduledExecutorService executorService;
 
 	private final Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+
+	private final Logger logger = Logger.getLogger("gameTimerService");
 
 	public ScheduleQueueGameTimeServiceImpl() {
 		this.executorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
@@ -64,6 +67,7 @@ public class ScheduleQueueGameTimeServiceImpl implements GameTimeService{
 			existedFuture.cancel(true);
 		}
 
+		logger.info("timer stop: " + gameId);
 		scheduledTasks.remove(gameId);
 	}
 	

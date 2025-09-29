@@ -2,6 +2,7 @@ package com.trymad.litechess_monolith.livegame.internal.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Component;
 
@@ -38,6 +39,8 @@ public class LiveGameService  {
 	private final LiveGameMapper liveGameMapper;
 
 	private final EventPublisher eventPublisher;
+
+	private final Logger logger = Logger.getLogger("liveService");
 
 	public LiveGame create(ChessPartyDTO chessParty) {
 		if(chessParty.status() != ChessGameStatus.NOT_FINISHED) {
@@ -119,11 +122,15 @@ public class LiveGameService  {
 			final PlayerColor winner = gameTimer.getCurrentTurn().flip();
 			final ChessGameStatus status = winner == PlayerColor.WHITE ? 
 				ChessGameStatus.WIN_WHITE : ChessGameStatus.WIN_BLACK;
+			
+			logger.info("TIMEOUT, WIN: " + status);
 			finishGame(gameId, status);
 		};
 	}
 
 	public void finishGame(Long gameId, ChessGameStatus status) {
+		gameTimeService.stopTimer(gameId);
+		
 		final LiveGame game = this.get(gameId);
 		final GameFinishEvent event = new GameFinishEvent(liveGameMapper.toDto(game), status);
 		eventPublisher.publish(event);

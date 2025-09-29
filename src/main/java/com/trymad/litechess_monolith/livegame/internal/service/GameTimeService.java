@@ -6,7 +6,6 @@ import com.trymad.litechess_monolith.livegame.internal.model.TimerHistory;
 
 public interface GameTimeService {
 	
-
 	GameTimer createTimer(TimeControlDTO timeControl, TimerHistory timerHistory);
 
 	void startTimer(long gameId, GameTimer gameTimer, Runnable onTimeout);

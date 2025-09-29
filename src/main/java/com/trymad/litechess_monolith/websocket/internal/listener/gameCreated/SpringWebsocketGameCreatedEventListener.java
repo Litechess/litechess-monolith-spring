@@ -20,6 +20,7 @@ public class SpringWebsocketGameCreatedEventListener implements EventListener<Ga
 	@org.springframework.context.event.EventListener
 	@Async
 	public void handle(GameCreatedEvent event) {
+		System.out.println("game created send");
 		gameMessageSender.gameCreate(event);
 	}
 	

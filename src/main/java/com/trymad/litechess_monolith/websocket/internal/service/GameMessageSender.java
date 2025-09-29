@@ -57,7 +57,7 @@ public class GameMessageSender {
 			.build();
 		
 		users.forEach(user -> messagingTemplate.convertAndSendToUser(
-			String.valueOf(id), "/topic/matchmaking/queue", createdGame));
+			user.toString(), "/topic/matchmaking/queue", createdGame));
 	}
 
 	public void gameFinish(GameFinishEvent event) {

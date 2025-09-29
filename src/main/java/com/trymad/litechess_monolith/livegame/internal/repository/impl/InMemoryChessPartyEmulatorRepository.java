@@ -21,7 +21,8 @@ public class InMemoryChessPartyEmulatorRepository implements ChessPartyEmulatorR
 
 	@Override
 	public ChessPartyEmulator save(Long id, ChessPartyEmulator emulator) {
-		return store.put(id, emulator);
+		store.put(id, emulator);
+		return emulator;
 	}
 
 	@Override
