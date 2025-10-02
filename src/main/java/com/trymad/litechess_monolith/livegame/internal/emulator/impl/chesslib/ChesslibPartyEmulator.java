@@ -1,6 +1,7 @@
 package com.trymad.litechess_monolith.livegame.internal.emulator.impl.chesslib;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.Piece;
@@ -42,9 +43,9 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final Move chessLibMove = convertToChesslibMove(move);
 		final boolean accepted = board.doMove(chessLibMove);
 		if(accepted) moveList.add(chessLibMove);
+		move.setPlyNumber(moveList.size());
 
 		return move;
-
 	}
 
 	@Override
@@ -85,11 +86,11 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 	}
 
 	private Move convertToChesslibMove(GameMove gameMove) {
-		final Square fromSquare = Square.fromValue(gameMove.from().toUpperCase());
-		final Square toSquare = Square.fromValue(gameMove.to().toUpperCase());
+		final Square fromSquare = Square.fromValue(gameMove.getFrom().toUpperCase());
+		final Square toSquare = Square.fromValue(gameMove.getTo().toUpperCase());
 		final Side side = board.getSideToMove();
-		final ChessPiece chessPiece = gameMove.promotion();
-		final String san = gameMove.san();
+		final ChessPiece chessPiece = gameMove.getPromotion();
+		final String san = gameMove.getSan();
 		final Piece piece = chessPiece == null ? 
 			Piece.NONE : Piece.make(side, PieceType.fromSanSymbol(chessPiece.sanName()));
 
@@ -105,14 +106,19 @@ public class ChesslibPartyEmulator implements ChessPartyEmulator {
 		final String san = chesslibMove.getSan();
 		final ChessPiece promotion = piece == Piece.NONE ? null : ChessPiece.fromLetter.get(piece.getSanSymbol().toLowerCase());
 
-		return new GameMove(from, to, promotion, san);
+		return new GameMove(from, to, promotion, san, null);
 	}
 
 	@Override
 	public List<GameMove> getMoveList() {
-		return moveList.stream()
-				.map(this::convertToGameMove)
-				.toList();
+		return IntStream.range(0, moveList.size())
+			.mapToObj(i -> {
+				GameMove gameMove = convertToGameMove(moveList.get(i));
+				gameMove.setPlyNumber(i + 1); 
+				return gameMove;
+			})
+			.toList();
 	}
+
 	
 }

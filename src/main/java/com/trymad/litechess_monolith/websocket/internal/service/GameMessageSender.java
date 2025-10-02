@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessparty.api.event.GameCreatedEvent;
 import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
+import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 import com.trymad.litechess_monolith.livegame.api.dto.LiveGameDTO;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
@@ -70,8 +71,8 @@ public class GameMessageSender {
 	}
 
 	public void move(MoveAcceptedEvent event) {
-		final Message<MoveRequest> message = MessageBuilder
-			.withPayload(event.moveRequest())
+		final Message<GameMove> message = MessageBuilder
+			.withPayload(event.move())
 			.setHeader("type", "move")
 			.build();
 		messagingTemplate.convertAndSend("/topic/game/" + event.gameId(), message);
