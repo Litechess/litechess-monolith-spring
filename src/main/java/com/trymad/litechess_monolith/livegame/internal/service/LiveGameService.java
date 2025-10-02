@@ -106,7 +106,7 @@ public class LiveGameService  {
 		}
 
 		final MoveAcceptedEvent acceptedMoveEvent = 
-			new MoveAcceptedEvent(event.moveRequest(), event.gameId(), event.playerId());
+			new MoveAcceptedEvent(move, event.gameId(), event.playerId());
 		eventPublisher.publish(acceptedMoveEvent);
 
 		liveGameRepository.save(liveGame);

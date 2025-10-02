@@ -2,10 +2,10 @@ package com.trymad.litechess_monolith.chessparty.api.event;
 
 import java.util.UUID;
 
+import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.shared.event.DomainEvent;
-import com.trymad.litechess_monolith.websocket.api.dto.MoveRequest;
 
 public record MoveAcceptedEvent(
-	MoveRequest moveRequest, Long gameId, UUID playerId
+	GameMove move, Long gameId, UUID playerId
 ) implements DomainEvent {}
 

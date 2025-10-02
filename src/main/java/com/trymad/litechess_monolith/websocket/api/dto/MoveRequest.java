@@ -6,5 +6,6 @@ public record MoveRequest(
         String from,
         String to,
         ChessPiece promotion,
-        String san
+        String san,
+        Integer plyNumber
 ) {}
