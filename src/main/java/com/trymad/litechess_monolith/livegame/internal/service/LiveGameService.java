@@ -1,6 +1,8 @@
 package com.trymad.litechess_monolith.livegame.internal.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
@@ -99,14 +101,18 @@ public class LiveGameService  {
 		final GameMove move = emulator.move(moveMapper.toEntity(event.moveRequest()));
 		liveGame.applyMove(move);
 
+		final Map<PlayerColor, Long> timers = liveGame.getTimer() == null ? null : new HashMap<>();
 		if(liveGame.getTimer() != null) {
 			final GameTimer gameTimer = liveGame.getTimer();
 			final Runnable whenTimeout = whenTimeout(liveGame.getId(), gameTimer);
 			gameTimeService.startTimer(liveGame.getId(), gameTimer, whenTimeout);
+			timers.put(PlayerColor.WHITE, gameTimer.getBlackTime().toMillis());
+			timers.put(PlayerColor.BLACK, gameTimer.getWhiteTime().toMillis());
 		}
 
+
 		final MoveAcceptedEvent acceptedMoveEvent = 
-			new MoveAcceptedEvent(move, event.gameId(), event.playerId());
+			new MoveAcceptedEvent(move, event.gameId(), timers);
 		eventPublisher.publish(acceptedMoveEvent);
 
 		liveGameRepository.save(liveGame);

@@ -12,13 +12,12 @@ import org.springframework.stereotype.Component;
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessparty.api.event.GameCreatedEvent;
 import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
-import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 import com.trymad.litechess_monolith.livegame.api.dto.LiveGameDTO;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.livegame.api.event.LiveGameStartEvent;
 import com.trymad.litechess_monolith.websocket.api.dto.GameCreatedDTO;
-import com.trymad.litechess_monolith.websocket.api.dto.MoveRequest;
+import com.trymad.litechess_monolith.websocket.api.dto.MoveResponse;
 import com.trymad.litechess_monolith.websocket.internal.model.GameResultMessage;
 
 import lombok.RequiredArgsConstructor;
@@ -71,8 +70,8 @@ public class GameMessageSender {
 	}
 
 	public void move(MoveAcceptedEvent event) {
-		final Message<GameMove> message = MessageBuilder
-			.withPayload(event.move())
+		final Message<MoveResponse> message = MessageBuilder
+			.withPayload(new MoveResponse(event.move(), event.timers()))
 			.setHeader("type", "move")
 			.build();
 		messagingTemplate.convertAndSend("/topic/game/" + event.gameId(), message);
