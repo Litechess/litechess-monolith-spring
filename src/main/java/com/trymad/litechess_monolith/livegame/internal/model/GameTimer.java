@@ -57,14 +57,14 @@ public class GameTimer {
     }
 
     public Duration getWhiteTime() {
-        if (currentTurn == PlayerColor.WHITE) {
+        if(currentTurn == PlayerColor.WHITE) {
             return getRemainingTimeForCurrentPlayer();
         }
         return Duration.ofMillis(whiteTime);
     }
 
     public Duration getBlackTime() {
-        if (currentTurn == PlayerColor.BLACK) {
+        if(currentTurn == PlayerColor.BLACK) {
             return getRemainingTimeForCurrentPlayer();
         }
         return Duration.ofMillis(blackTime);

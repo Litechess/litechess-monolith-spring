@@ -18,7 +18,7 @@ import com.trymad.litechess_monolith.livegame.internal.model.TimerHistory;
 import com.trymad.litechess_monolith.livegame.internal.service.GameTimeService;
 
 @Component
-public class ScheduleQueueGameTimeServiceImpl implements GameTimeService{
+public class ScheduleQueueGameTimeServiceImpl implements GameTimeService {
 
 	private final static int THREAD_POOL_SIZE = 5;
 
@@ -35,11 +35,11 @@ public class ScheduleQueueGameTimeServiceImpl implements GameTimeService{
 	@Override
 	public GameTimer createTimer(TimeControlDTO timeControl, TimerHistory timerHistory) {
 		final Duration lastTimerWhite = timerHistory.getLastTimerValue(PlayerColor.WHITE);
-		final Duration lastTimerBlack = timerHistory.getLastTimerValue(PlayerColor.WHITE);
+		final Duration lastTimerBlack = timerHistory.getLastTimerValue(PlayerColor.BLACK);
 
 		final Duration whiteTime = lastTimerWhite != null ? lastTimerWhite : Duration.ofMillis(timeControl.initTime());
 		final Duration blackTime = lastTimerBlack != null ? lastTimerBlack : Duration.ofMillis(timeControl.initTime());
-		final PlayerColor currentTurn = timerHistory.getLastTimedPlayer() != null ? 
+		final PlayerColor currentTurn = timerHistory.getLastTimedPlayer() == null ? 
 			PlayerColor.WHITE : timerHistory.getLastTimedPlayer().flip();
 
 		return new GameTimer(whiteTime, blackTime, currentTurn, timeControl);
