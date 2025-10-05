@@ -99,15 +99,19 @@ public class LiveGameService  {
 		}
 
 		final GameMove move = emulator.move(moveMapper.toEntity(event.moveRequest()));
-		liveGame.applyMove(move);
 
 		final Map<PlayerColor, Long> timers = liveGame.getTimer() == null ? null : new HashMap<>();
+
+		liveGame.applyMove(move);
 		if(liveGame.getTimer() != null) {
 			final GameTimer gameTimer = liveGame.getTimer();
 			final Runnable whenTimeout = whenTimeout(liveGame.getId(), gameTimer);
 			gameTimeService.startTimer(liveGame.getId(), gameTimer, whenTimeout);
-			timers.put(PlayerColor.WHITE, gameTimer.getBlackTime().toMillis());
-			timers.put(PlayerColor.BLACK, gameTimer.getWhiteTime().toMillis());
+			timers.put(PlayerColor.WHITE, gameTimer.getWhiteTime().toMillis());
+			timers.put(PlayerColor.BLACK, gameTimer.getBlackTime().toMillis());
+
+			logger.info("white time: " + gameTimer.getWhiteTime().toSeconds());
+			logger.info("black time: " + gameTimer.getBlackTime().toSeconds());
 		}
 
 

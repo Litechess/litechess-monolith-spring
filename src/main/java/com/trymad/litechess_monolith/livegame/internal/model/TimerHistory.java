@@ -26,25 +26,21 @@ public class TimerHistory {
 	}
 
 	public Duration getLastTimerValue(PlayerColor side) {
-		int minSize = side == PlayerColor.WHITE ? 1 : 2;
-		if(history.size() < minSize) {
-			return null;
+		if(side == PlayerColor.WHITE && history.size() >= 1) {
+			long millis = history.size() % 2 == 0 ? history.get(history.size() - 2) : history.get(history.size() - 1);
+			return Duration.ofMillis(millis);
+		}
+		else if(side == PlayerColor.BLACK && history.size() >= 2) {
+			long millis = history.size() % 2 == 0 ? history.get(history.size() - 1) : history.get(history.size() - 2);
+			return Duration.ofMillis(millis);
 		}
 		
-		if(history.size() % 2 == 0) {
-			return side == PlayerColor.WHITE ? 
-				Duration.ofMillis(history.get(history.size() - 2)) : 
-				Duration.ofMillis(history.get(history.size() - 1));
-		} else {
-			return side == PlayerColor.WHITE ? 
-				Duration.ofMillis(history.get(history.size() - 1)) : 
-				Duration.ofMillis(history.get(history.size() - 2));
-		}
+		return null;
 	}
 
 	public PlayerColor getLastTimedPlayer() {
 		if(history.isEmpty()) {
-			return PlayerColor.WHITE;
+			return null;
 		}
 		return history.size() % 2 == 0 ? PlayerColor.BLACK : PlayerColor.WHITE;
 	}
