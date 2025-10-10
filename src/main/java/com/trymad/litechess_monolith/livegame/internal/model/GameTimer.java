@@ -1,73 +1,82 @@
 package com.trymad.litechess_monolith.livegame.internal.model;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.trymad.litechess_monolith.chessparty.api.dto.TimeControlDTO;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 
 public class GameTimer {
 
-    private long whiteTime; 
-    private long blackTime; 
-    private long increment;  
-    private PlayerColor currentTurn;
-    private long lastMoveTimestamp;
+    private final Map<PlayerColor, Instant> deadLines = new ConcurrentHashMap<>();
+    private final Map<PlayerColor, Long> remainingTimes = new ConcurrentHashMap<>();
+    private final TimerHistory timerHistory;
+    
     private final TimeControlDTO timeControl;
 
-    public GameTimer(Duration whiteTime, Duration blackTime, PlayerColor currentTurn, TimeControlDTO timeControl) {
-        this.whiteTime = whiteTime.toMillis();
-        this.blackTime = blackTime.toMillis();
-        this.increment = timeControl.increment();
-        this.lastMoveTimestamp = System.currentTimeMillis();
+    public GameTimer(TimerHistory history, TimeControlDTO timeControl) {
+        this.timerHistory = history;
         this.timeControl = timeControl;
-        this.currentTurn = currentTurn;
+        final Duration lastWhiteTime = timerHistory.getLastTimerValue(PlayerColor.WHITE);
+        final Duration lastBlackTime = timerHistory.getLastTimerValue(PlayerColor.BLACK);
+        remainingTimes.put(PlayerColor.WHITE, lastWhiteTime == null ? timeControl.initTime() : lastWhiteTime.toMillis());
+        remainingTimes.put(PlayerColor.BLACK, lastBlackTime == null ? timeControl.initTime() : lastBlackTime.toMillis());
     }
 
-
-    public void applyMove() {
-        long now = System.currentTimeMillis();
-        long spent = now - lastMoveTimestamp;
-
-        if (currentTurn == PlayerColor.WHITE) {
-            whiteTime -= spent;
-            whiteTime += increment;
-            currentTurn = PlayerColor.BLACK;
-        } else {
-            blackTime -= spent;
-            blackTime += increment;
-            currentTurn = PlayerColor.WHITE;
-        }
-
-        lastMoveTimestamp = now;
+    public void start() {
+        final PlayerColor currentTurn = getCurrentTurn();
+        final long remainingTime = remainingTimes.get(currentTurn);
+        deadLines.put(currentTurn, Instant.now().plusMillis(remainingTime));
     }
 
-    public Duration getRemainingTimeForCurrentPlayer() {
-        long now = System.currentTimeMillis();
-        long spent = now - lastMoveTimestamp;
+    public void stop() {
+        deadLines.remove(getCurrentTurn());
+    }
 
-        if (currentTurn == PlayerColor.WHITE) {
-            return Duration.ofMillis(whiteTime - spent);
-        } else {
-            return Duration.ofMillis(blackTime - spent);
-        }
+    public boolean isRunning() {
+        return deadLines.containsKey(getCurrentTurn());
     }
 
     public PlayerColor getCurrentTurn() {
-        return currentTurn;
+        return timerHistory.getLastTimedPlayer() == null ? 
+            PlayerColor.WHITE : timerHistory.getLastTimedPlayer().flip();
     }
 
-    public Duration getWhiteTime() {
-        if(currentTurn == PlayerColor.WHITE) {
-            return getRemainingTimeForCurrentPlayer();
+    public void applyMove() {
+        final PlayerColor currentTurn = getCurrentTurn();
+        if(!isRunning()) {
+            throw new IllegalStateException("Timer is not running");
         }
-        return Duration.ofMillis(whiteTime);
+
+        final Instant deadLine = deadLines.get(currentTurn);
+        final long timeUsed = Duration.between(deadLine, Instant.now()).abs().toMillis();
+        long newRemainingTime = timeUsed + timeControl.increment();
+        remainingTimes.put(currentTurn, Math.max(newRemainingTime, 0));
+        deadLines.remove(currentTurn);
+        timerHistory.addTime(Duration.ofMillis(remainingTimes.get(currentTurn)));
+
+        final long remainingTimeOpponent = remainingTimes.get(currentTurn.flip());
+        deadLines.put(currentTurn.flip(), Instant.now().plusMillis(remainingTimeOpponent));
     }
 
-    public Duration getBlackTime() {
-        if(currentTurn == PlayerColor.BLACK) {
-            return getRemainingTimeForCurrentPlayer();
+    public Instant getDeadline(PlayerColor color) {
+        return deadLines.get(color);
+    }
+
+    public Instant getRemainingTime(PlayerColor color) {
+        final Instant deadLine = deadLines.get(color);
+        if(deadLine == null) {
+            return Instant.now().plusMillis(remainingTimes.get(color));
         }
-        return Duration.ofMillis(blackTime);
+
+        final long remainingMillis = Duration.between(Instant.now(), deadLine).abs().toMillis();
+        return Instant.now().plusMillis(remainingMillis);
+    }
+
+    public TimerHistory getTimerHistory() {
+        return timerHistory;
     }
 
     public TimeControlDTO getTimeControl() {

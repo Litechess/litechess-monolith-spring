@@ -16,7 +16,6 @@ public class LiveGame {
 	private final Long id;
 	private final List<GameMove> moves = new LinkedList<>();
 	private final Map<PlayerColor, UUID> playerSides = new EnumMap<>(PlayerColor.class);
-	private final TimerHistory timerHistory;
 	private final GameTimer gameTimer;
 
 	public LiveGame(ChessPartyDTO chessParty, GameTimer gameTimer) {
@@ -29,10 +28,8 @@ public class LiveGame {
 		}
 
 		if(isTimeConrolledGame) {
-			this.timerHistory = new TimerHistory(chessParty.timerHistory());
 			this.gameTimer = gameTimer;
 		} else {
-			this.timerHistory = null;
 			this.gameTimer = null;
 		}
 
@@ -44,7 +41,6 @@ public class LiveGame {
 		moves.add(move);
 
 		if(gameTimer != null) {
-			timerHistory.addTime(gameTimer.getRemainingTimeForCurrentPlayer());
 			gameTimer.applyMove();
 		}
 	}
@@ -66,7 +62,7 @@ public class LiveGame {
 	}
 
 	public TimerHistory getTimerHistory() {
-		return timerHistory;
+		return gameTimer.getTimerHistory();
 	}
 
 	public Map<PlayerColor, UUID> getPlayerSides() {
