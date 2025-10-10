@@ -1,5 +1,6 @@
 package com.trymad.litechess_monolith.websocket.internal.service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -71,7 +72,7 @@ public class GameMessageSender {
 
 	public void move(MoveAcceptedEvent event) {
 		final Message<MoveResponse> message = MessageBuilder
-			.withPayload(new MoveResponse(event.move(), event.timers()))
+			.withPayload(new MoveResponse(event.move(), event.timers(), Instant.now().toEpochMilli()))
 			.setHeader("type", "move")
 			.build();
 		messagingTemplate.convertAndSend("/topic/game/" + event.gameId(), message);

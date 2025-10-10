@@ -13,5 +13,6 @@ public record LiveGameDTO(
 	Map<PlayerColor, UUID> 
 	playerSides, 
 	List<Long> timerHistory,
-	Map<PlayerColor, Long> currentTimers) {
+	Map<PlayerColor, Long> currentTimers
+	) {
 }

@@ -51,15 +51,18 @@ public class LiveGameService  {
 
 		final GameTimer gameTimer = 
 			gameTimeService.createTimer(chessParty.timeControl(), new TimerHistory(chessParty.timerHistory()));
+		
 		final LiveGame newLiveGame = new LiveGame(chessParty, gameTimer);
 		emulatorService.createEmulator(chessParty.id()).setPosition(chessParty.moves());
 
 		final LiveGame gameFromRepo = liveGameRepository.save(newLiveGame);
+		gameTimer.start();
 		gameTimeService.startTimer(chessParty.id(), gameTimer, whenTimeout(chessParty.id(), gameTimer));
+
 
 		final LiveGameStartEvent event = new LiveGameStartEvent(liveGameMapper.toDto(gameFromRepo));
 		eventPublisher.publish(event);
-		
+
 		return gameFromRepo;
 	}
 
@@ -107,11 +110,10 @@ public class LiveGameService  {
 			final GameTimer gameTimer = liveGame.getTimer();
 			final Runnable whenTimeout = whenTimeout(liveGame.getId(), gameTimer);
 			gameTimeService.startTimer(liveGame.getId(), gameTimer, whenTimeout);
-			timers.put(PlayerColor.WHITE, gameTimer.getWhiteTime().toMillis());
-			timers.put(PlayerColor.BLACK, gameTimer.getBlackTime().toMillis());
+			timers.put(PlayerColor.WHITE, gameTimer.getRemainingTime(PlayerColor.WHITE).toEpochMilli());
+			timers.put(PlayerColor.BLACK, gameTimer.getRemainingTime(PlayerColor.BLACK).toEpochMilli());
 
-			logger.info("white time: " + gameTimer.getWhiteTime().toSeconds());
-			logger.info("black time: " + gameTimer.getBlackTime().toSeconds());
+			logger.info(timers.toString());
 		}
 
 
@@ -129,6 +131,8 @@ public class LiveGameService  {
 
 	private Runnable whenTimeout(Long gameId, GameTimer gameTimer) {
 		return () -> {
+			logger.warning("TIMEOUT NOW");
+			gameTimer.stop();
 			final PlayerColor winner = gameTimer.getCurrentTurn().flip();
 			final ChessGameStatus status = winner == PlayerColor.WHITE ? 
 				ChessGameStatus.WIN_WHITE : ChessGameStatus.WIN_BLACK;
@@ -142,6 +146,10 @@ public class LiveGameService  {
 		gameTimeService.stopTimer(gameId);
 		
 		final LiveGame game = this.get(gameId);
+		if(game.getTimer() != null) {
+			game.getTimer().stop();
+		}
+
 		final GameFinishEvent event = new GameFinishEvent(liveGameMapper.toDto(game), status);
 		eventPublisher.publish(event);
 

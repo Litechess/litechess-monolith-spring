@@ -28,8 +28,8 @@ public interface MapstructLiveGameMapper  extends LiveGameMapper {
 		}
 
 		return Map.of(
-			PlayerColor.WHITE, entity.getTimer().getWhiteTime().toMillis(),
-			PlayerColor.BLACK, entity.getTimer().getBlackTime().toMillis()
+			PlayerColor.WHITE, entity.getTimer().getRemainingTime(PlayerColor.WHITE).toEpochMilli(),
+			PlayerColor.BLACK, entity.getTimer().getRemainingTime(PlayerColor.BLACK).toEpochMilli()
 		);
 	}
 }
