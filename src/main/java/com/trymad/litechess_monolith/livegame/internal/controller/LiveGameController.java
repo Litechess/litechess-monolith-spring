@@ -1,7 +1,6 @@
 package com.trymad.litechess_monolith.livegame.internal.controller;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
