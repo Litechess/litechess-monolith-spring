@@ -12,21 +12,21 @@ import com.trymad.litechess_monolith.livegame.internal.repository.ChessPartyEmul
 @Component
 public class InMemoryChessPartyEmulatorRepository implements ChessPartyEmulatorRepository {
 
-	private final Map<Long, ChessPartyEmulator> store = new ConcurrentHashMap<>();
+	private final Map<String, ChessPartyEmulator> store = new ConcurrentHashMap<>();
 
 	@Override
-	public Optional<ChessPartyEmulator> findById(Long id) {
+	public Optional<ChessPartyEmulator> findById(String id) {
 		return Optional.ofNullable(store.get(id));
 	}
 
 	@Override
-	public ChessPartyEmulator save(Long id, ChessPartyEmulator emulator) {
+	public ChessPartyEmulator save(String id, ChessPartyEmulator emulator) {
 		store.put(id, emulator);
 		return emulator;
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void delete(String id) {
 		store.remove(id);
 	}
 	

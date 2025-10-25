@@ -26,7 +26,7 @@ public class WebSocketController {
 
     @MessageMapping("game/{gameId}")
     // @SendTo("/topic/{gameId}/move")
-    public void acceptMove(@Payload MoveRequest moveRequest, @DestinationVariable("gameId") Long gameId, Principal principal) {
+    public void acceptMove(@Payload MoveRequest moveRequest, @DestinationVariable("gameId") String gameId, Principal principal) {
       final MoveEvent moveEvent = new MoveEvent(moveRequest, gameId, UUID.fromString(principal.getName()));
       logger.info(moveRequest.toString());
       eventPublisher.publish(moveEvent);

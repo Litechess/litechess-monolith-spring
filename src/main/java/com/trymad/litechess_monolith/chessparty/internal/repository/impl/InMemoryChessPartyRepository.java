@@ -14,22 +14,22 @@ import com.trymad.litechess_monolith.chessparty.internal.repository.ChessPartyRe
 
 @Component
 public class InMemoryChessPartyRepository implements ChessPartyRepository {
-	private final Map<Long, ChessParty> store = new ConcurrentHashMap<>();
+	private final Map<String, ChessParty> store = new ConcurrentHashMap<>();
 	private Long idSequence = 1l;
 
 	@Override
-	public Optional<ChessParty> getById(Long id) {
+	public Optional<ChessParty> getById(String id) {
 		return Optional.of(store.get(id));
 	}
 
 	@Override
-	public boolean existsById(Long id) {
+	public boolean existsById(String id) {
 		return store.containsKey(id);
 	}
 
 	@Override
 	public ChessParty save(ChessParty chessParty) {
-		final Long gameId = idSequence++;
+		final String gameId = String.valueOf(idSequence++);
 		chessParty.setId(gameId);
 		store.put(gameId, chessParty);
 
@@ -44,7 +44,7 @@ public class InMemoryChessPartyRepository implements ChessPartyRepository {
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void delete(String id) {
 		store.remove(id);
 	}
 

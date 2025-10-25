@@ -18,18 +18,18 @@ public class ChessPartyEmulatorServiceImpl implements ChessPartyEmulatorService 
 	final ChessPartyEmulatorFactory factory;
 
 	@Override
-	public ChessPartyEmulator getEmulator(Long gameId) {
+	public ChessPartyEmulator getEmulator(String gameId) {
 		return chessPartyEmulatorRepository.findById(gameId).orElseThrow();
 	}
 
 	@Override
-	public ChessPartyEmulator createEmulator(Long gameId) {
+	public ChessPartyEmulator createEmulator(String gameId) {
 		final ChessPartyEmulator emulator = factory.create();
 		return chessPartyEmulatorRepository.save(gameId, emulator);
 	}
 
 	@Override
-	public void deleteEmulator(Long gameId) {
+	public void deleteEmulator(String gameId) {
 		chessPartyEmulatorRepository.delete(gameId);
 	}
 }

@@ -30,7 +30,7 @@ public class GamePartyController {
 	private final ChessPartyMapper mapper;
 
 	@GetMapping("/{id}")
-	public ChessPartyDTO getChessParty(@PathVariable Long id) {
+	public ChessPartyDTO getChessParty(@PathVariable String id) {
 		System.out.println("PERFORM");
 		final ChessParty chessParty = chessPartyService.get(id);
 		return mapper.toDto(chessParty);

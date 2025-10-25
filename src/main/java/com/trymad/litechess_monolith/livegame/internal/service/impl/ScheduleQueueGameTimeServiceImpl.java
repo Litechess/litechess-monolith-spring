@@ -24,7 +24,7 @@ public class ScheduleQueueGameTimeServiceImpl implements GameTimeService {
 
 	private final ScheduledExecutorService executorService;
 
-	private final Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+	private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
 	private final Logger logger = Logger.getLogger("gameTimerService");
 
@@ -38,7 +38,7 @@ public class ScheduleQueueGameTimeServiceImpl implements GameTimeService {
 	}
 
 	@Override
-	public void startTimer(long gameId, GameTimer gameTimer, Runnable onTimeout) {
+	public void startTimer(String gameId, GameTimer gameTimer, Runnable onTimeout) {
 		stopTimer(gameId);
 
 		final Runnable runnable = () -> {
@@ -57,7 +57,7 @@ public class ScheduleQueueGameTimeServiceImpl implements GameTimeService {
 	}
 
 	@Override
-	public void stopTimer(long gameId) {
+	public void stopTimer(String gameId) {
 		final ScheduledFuture<?> existedFuture = scheduledTasks.get(gameId);
 		if(existedFuture != null && !existedFuture.isDone()) {
 			existedFuture.cancel(true);

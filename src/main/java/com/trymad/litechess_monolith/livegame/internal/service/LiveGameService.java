@@ -1,5 +1,6 @@
 package com.trymad.litechess_monolith.livegame.internal.service;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class LiveGameService  {
 		return gameFromRepo;
 	}
 
-	public LiveGame get(Long id) {
+	public LiveGame get(String id) {
 		return liveGameRepository.findById(id).orElseThrow(
 			() -> new NoSuchElementException("Live game " + id + "not found"));
 	}
@@ -75,11 +76,11 @@ public class LiveGameService  {
 		return liveGameRepository.findAll(filter);
 	}
 
-	public void delete(Long id) {
+	public void delete(String id) {
 		liveGameRepository.delete(id);
 	}
 
-	public boolean contains(Long id) {
+	public boolean contains(String id) {
 		return liveGameRepository.existsById(id);
 	}
 
@@ -129,25 +130,28 @@ public class LiveGameService  {
 		}
 	}
 
-	private Runnable whenTimeout(Long gameId, GameTimer gameTimer) {
+	private Runnable whenTimeout(String gameId, GameTimer gameTimer) {
 		return () -> {
 			logger.warning("TIMEOUT NOW");
 			gameTimer.stop();
 			final PlayerColor winner = gameTimer.getCurrentTurn().flip();
 			final ChessGameStatus status = winner == PlayerColor.WHITE ? 
-				ChessGameStatus.WIN_WHITE : ChessGameStatus.WIN_BLACK;
+				ChessGameStatus.TIMEOUT_WIN_WHITE : ChessGameStatus.TIMEOUT_WIN_BLACK;
 			
 			logger.info("TIMEOUT, WIN: " + status);
 			finishGame(gameId, status);
 		};
 	}
 
-	public void finishGame(Long gameId, ChessGameStatus status) {
+	public void finishGame(String gameId, ChessGameStatus status) {
 		gameTimeService.stopTimer(gameId);
 		
 		final LiveGame game = this.get(gameId);
 		if(game.getTimer() != null) {
 			game.getTimer().stop();
+			if(status == ChessGameStatus.TIMEOUT_WIN_BLACK || status == ChessGameStatus.TIMEOUT_WIN_WHITE) {
+				game.getTimerHistory().addTime(Duration.ZERO);
+			}
 		}
 
 		final GameFinishEvent event = new GameFinishEvent(liveGameMapper.toDto(game), status);

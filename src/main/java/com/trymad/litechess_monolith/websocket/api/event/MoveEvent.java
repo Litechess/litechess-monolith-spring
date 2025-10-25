@@ -6,5 +6,5 @@ import com.trymad.litechess_monolith.shared.event.DomainEvent;
 import com.trymad.litechess_monolith.websocket.api.dto.MoveRequest;
 
 public record MoveEvent(
-	MoveRequest moveRequest, Long gameId, UUID playerId
+	MoveRequest moveRequest, String gameId, UUID playerId
 ) implements DomainEvent {}

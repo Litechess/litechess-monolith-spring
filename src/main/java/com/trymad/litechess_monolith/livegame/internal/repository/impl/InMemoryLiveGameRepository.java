@@ -17,10 +17,10 @@ import com.trymad.litechess_monolith.livegame.internal.repository.LiveGameReposi
 @Component
 public class InMemoryLiveGameRepository implements LiveGameRepository {
 
-	private final Map<Long, LiveGame> store = new ConcurrentHashMap<>();
+	private final Map<String, LiveGame> store = new ConcurrentHashMap<>();
 
 	@Override
-	public Optional<LiveGame> findById(Long id) {
+	public Optional<LiveGame> findById(String id) {
 		return Optional.ofNullable(store.get(id));
 	}
 
@@ -32,7 +32,7 @@ public class InMemoryLiveGameRepository implements LiveGameRepository {
 	}
 
 	@Override
-	public boolean existsById(Long id) {
+	public boolean existsById(String id) {
 		return store.containsKey(id);
 	}
 
@@ -43,7 +43,7 @@ public class InMemoryLiveGameRepository implements LiveGameRepository {
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void delete(String id) {
 		store.remove(id);
 	}
 

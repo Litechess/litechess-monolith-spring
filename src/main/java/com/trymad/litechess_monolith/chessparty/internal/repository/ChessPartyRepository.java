@@ -7,15 +7,15 @@ import com.trymad.litechess_monolith.chessparty.internal.model.ChessParty;
 
 public interface ChessPartyRepository {
 	
-	Optional<ChessParty> getById(Long id);
+	Optional<ChessParty> getById(String id);
 
 	List<ChessParty> getAll();
 
-	boolean existsById(Long id);
+	boolean existsById(String id);
 
 	ChessParty save(ChessParty chessParty);
 
-	void delete(Long id);
+	void delete(String id);
 
 	void deleteAll(List<ChessParty> parties);
 

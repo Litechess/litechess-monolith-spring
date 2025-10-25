@@ -6,10 +6,10 @@ import com.trymad.litechess_monolith.livegame.internal.emulator.ChessPartyEmulat
 
 public interface ChessPartyEmulatorRepository {
 	
-	Optional<ChessPartyEmulator> findById(Long id);
+	Optional<ChessPartyEmulator> findById(String id);
 
-	ChessPartyEmulator save(Long id, ChessPartyEmulator emulator);
+	ChessPartyEmulator save(String id, ChessPartyEmulator emulator);
 
-	void delete(Long id);
+	void delete(String id);
 
 }

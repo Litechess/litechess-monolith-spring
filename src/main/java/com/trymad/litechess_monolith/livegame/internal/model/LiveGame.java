@@ -13,7 +13,7 @@ import com.trymad.litechess_monolith.chessparty.api.model.TimeControlType;
 
 public class LiveGame {
 
-	private final Long id;
+	private final String id;
 	private final List<GameMove> moves = new LinkedList<>();
 	private final Map<PlayerColor, UUID> playerSides = new EnumMap<>(PlayerColor.class);
 	private final GameTimer gameTimer;
@@ -69,7 +69,7 @@ public class LiveGame {
 		return playerSides;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return this.id;
 	}
 }

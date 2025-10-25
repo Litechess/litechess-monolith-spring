@@ -47,11 +47,11 @@ public class ChessPartyService {
 
 
 	// todo optional return from repo
-	public ChessParty get(Long id) {
+	public ChessParty get(String id) {
 		return chessPartyRepository.getById(id).get();
 	}
 
-	public boolean exists(Long id) {
+	public boolean exists(String id) {
 		return chessPartyRepository.existsById(id);
 	}
 	
@@ -69,7 +69,7 @@ public class ChessPartyService {
 		return this.update(chessParty);
 	}
 
-	public void delete(Long id) {
+	public void delete(String id) {
 		chessPartyRepository.delete(id);
 	}
 

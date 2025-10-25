@@ -20,33 +20,8 @@ import lombok.Setter;
 @Document
 public class ChessParty {
 
-@PersistenceCreator
-public ChessParty(Long id,
-                  PlayerInfo white,
-                  PlayerInfo black,
-                  List<GameMove> moves,
-                  List<Long> timerHistory,
-                  TimeControl timeControl,
-                  String initFen,
-                  ChessGameStatus status) {
-    this.id = id;
-    this.white = white;
-    this.black = black;
-    if(moves != null) {
-		this.moves.addAll(moves);
-	}
-
-	if(timerHistory != null) {
-		this.timerHistory.addAll(timerHistory);
-	}
-
-    this.timeControl = timeControl;
-    this.initFen = initFen;
-    this.status = status;
-}
-
 	@Id
-	private Long id;
+	private String id;
 
 	private PlayerInfo white;
 
@@ -61,6 +36,31 @@ public ChessParty(Long id,
 	private String initFen;
 
 	private ChessGameStatus status;
+
+	@PersistenceCreator
+	public ChessParty(String id,
+					PlayerInfo white,
+					PlayerInfo black,
+					List<GameMove> moves,
+					List<Long> timerHistory,
+					TimeControl timeControl,
+					String initFen,
+					ChessGameStatus status) {
+		this.id = id;
+		this.white = white;
+		this.black = black;
+		if(moves != null) {
+			this.moves.addAll(moves);
+		}
+
+		if(timerHistory != null) {
+			this.timerHistory.addAll(timerHistory);
+		}
+
+		this.timeControl = timeControl;
+		this.initFen = initFen;
+		this.status = status;
+	}
 
 	@Override
 	public boolean equals(Object o) {

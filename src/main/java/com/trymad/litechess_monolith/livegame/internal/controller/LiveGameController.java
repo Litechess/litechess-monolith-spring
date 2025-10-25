@@ -29,7 +29,7 @@ public class LiveGameController {
 	private final LiveGameService liveGameService;
 
 	@GetMapping("/{id}")
-	LiveGameResponse getById(@PathVariable Long id) {
+	LiveGameResponse getById(@PathVariable String id) {
 		return new LiveGameResponse(mapper.toDto(liveGameService.get(id)), Instant.now().toEpochMilli());
 	}
 

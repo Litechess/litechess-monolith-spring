@@ -50,7 +50,7 @@ public class GameMessageSender {
 		gameCreate(liveGame.id(), users);
 	}
 	
-	private void gameCreate(Long id, List<UUID> users) {
+	private void gameCreate(String id, List<UUID> users) {
 		final GameCreatedDTO gameCreatedDTO = new GameCreatedDTO(id);
 		final Message<GameCreatedDTO> createdGame = MessageBuilder
 			.withPayload(gameCreatedDTO)

@@ -4,10 +4,10 @@ import com.trymad.litechess_monolith.livegame.internal.emulator.ChessPartyEmulat
 
 public interface ChessPartyEmulatorService {
 	
-	ChessPartyEmulator getEmulator(Long gameId);
+	ChessPartyEmulator getEmulator(String gameId);
 
-	ChessPartyEmulator createEmulator(Long gameId);
+	ChessPartyEmulator createEmulator(String gameId);
 
-	void deleteEmulator(Long gameId);
+	void deleteEmulator(String gameId);
 
 }

@@ -7,7 +7,7 @@ import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerInfo;
 
 public record ChessPartyDTO(
-	Long id,
+	String id,
 	PlayerInfo white,
 	PlayerInfo black,
 	List<GameMove> moves,

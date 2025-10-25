@@ -8,15 +8,15 @@ import com.trymad.litechess_monolith.livegame.internal.model.LiveGame;
 
 public interface LiveGameRepository {
 
-	Optional<LiveGame> findById(Long id);
+	Optional<LiveGame> findById(String id);
 
 	List<LiveGame> findAll();
 
 	List<LiveGame> findAll(LiveGameFilter filter);
 
-	boolean existsById(Long id);
+	boolean existsById(String id);
 
-	void delete(Long id);
+	void delete(String id);
 
 	LiveGame save(LiveGame liveGame);
 	

@@ -18,10 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class MongoAdapterChessPartyRepository implements ChessPartyRepository {
 
 	private final MongoChessPartyRepository mongoChessPartyRepository;
-	private final SequenceGeneratorService sequenceGeneratorService;
+	private final IdGeneratorService sequenceGeneratorService;
 
 	@Override
-	public Optional<ChessParty> getById(Long id) {
+	public Optional<ChessParty> getById(String id) {
 		return mongoChessPartyRepository.findById(id);
 	}
 
@@ -31,15 +31,15 @@ public class MongoAdapterChessPartyRepository implements ChessPartyRepository {
 	}
 
 	@Override
-	public boolean existsById(Long id) {
+	public boolean existsById(String id) {
 		return mongoChessPartyRepository.existsById(id);
 	}
 
 	@Override
 	// check if exists 
 	public ChessParty save(ChessParty chessParty) {
-		if(chessParty.getId() == null || chessParty.getId() < 0) {
-			final long id = sequenceGeneratorService.generateSequence("chessparty_seq");
+		if(chessParty.getId() == null) {
+			final String id = sequenceGeneratorService.generateUniqueId();
 			chessParty.setId(id);
 		}
 
@@ -47,7 +47,7 @@ public class MongoAdapterChessPartyRepository implements ChessPartyRepository {
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void delete(String id) {
 		mongoChessPartyRepository.deleteById(id);
 	}
 

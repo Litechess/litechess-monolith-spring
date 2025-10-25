@@ -8,9 +8,9 @@ public interface GameTimeService {
 	
 	GameTimer createTimer(TimeControlDTO timeControl, TimerHistory timerHistory);
 
-	void startTimer(long gameId, GameTimer gameTimer, Runnable onTimeout);
+	void startTimer(String gameId, GameTimer gameTimer, Runnable onTimeout);
 
-	void stopTimer(long gameId);
+	void stopTimer(String gameId);
 
 
 }
