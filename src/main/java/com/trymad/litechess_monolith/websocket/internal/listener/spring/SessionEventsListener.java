@@ -25,23 +25,28 @@ public class SessionEventsListener {
 
 	@EventListener
 	void onDisconnect(SessionDisconnectEvent springEvent) {
-		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(springEvent.getMessage());
-		final UserOfflineEvent event = new UserOfflineEvent(UUID.fromString(accessor.getUser().getName()));
+		final UserOfflineEvent event = new UserOfflineEvent(UUID.fromString(springEvent.getUser().getName()));
 		publisher.publish(event);
 	}
 
 	@EventListener
 	void onConnect(SessionConnectedEvent springEvent) {
-		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(springEvent.getMessage());
-		final UserOnlineEvent event = new UserOnlineEvent(UUID.fromString(accessor.getUser().getName()));
+		final UserOnlineEvent event = new UserOnlineEvent(UUID.fromString(springEvent.getUser().getName()));
 		publisher.publish(event);
 	}
 
 
-	// TODO !!!!! destination check
+	@EventListener
 	void onUnsubcribe(SessionUnsubscribeEvent springEvent) {
-		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(springEvent.getMessage());
-		final QueueLeaveEvent queueLeaveEvent = new QueueLeaveEvent(accessor.getId());
+		final StompHeaderAccessor accessor = StompHeaderAccessor.wrap(springEvent.getMessage());
+		final String destination = accessor.getDestination();
+		if("/matchmaking/queue".equals(destination)) {
+			leaveFromQueue(UUID.fromString(springEvent.getUser().getName()));
+		}
+	}
+
+	private void leaveFromQueue(UUID userId) {
+		final QueueLeaveEvent queueLeaveEvent = new QueueLeaveEvent(userId);
 		publisher.publish(queueLeaveEvent);
 	}
 
