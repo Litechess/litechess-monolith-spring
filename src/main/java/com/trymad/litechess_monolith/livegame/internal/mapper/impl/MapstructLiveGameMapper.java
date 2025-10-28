@@ -19,6 +19,7 @@ public interface MapstructLiveGameMapper  extends LiveGameMapper {
     LiveGameDTO toDto(LiveGame entity);
 
 	default List<Long> map(TimerHistory history) {
+		if(history == null) return null;
 		return history.getAsList();
 	}
 

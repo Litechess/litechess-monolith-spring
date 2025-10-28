@@ -62,6 +62,7 @@ public class LiveGame {
 	}
 
 	public TimerHistory getTimerHistory() {
+		if(gameTimer == null) return null;
 		return gameTimer.getTimerHistory();
 	}
 

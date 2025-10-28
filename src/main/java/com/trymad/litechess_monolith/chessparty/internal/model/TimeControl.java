@@ -27,7 +27,7 @@ public class TimeControl {
 		} else {
 			this.initTime = initTime;
 			this.increment = increment;
-			this.type = increment.isPositive() ? TimeControlType.WITHOUT_INCREMENT : TimeControlType.WITH_INCREMENT;
+			this.type = increment.isPositive() ? TimeControlType.WITH_INCREMENT : TimeControlType.WITHOUT_INCREMENT;
 		}
 	}
 
