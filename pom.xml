@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.trymad</groupId>
 	<artifactId>litechess-monolith</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>litechess-monolith</name>
 	<description></description>
 	<url/>
