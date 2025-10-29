@@ -1,10 +1,14 @@
 package com.trymad.litechess_monolith.websocket.internal.controller;
 
+import com.trymad.litechess_monolith.livegame.api.event.DeclineDrawEvent;
+import com.trymad.litechess_monolith.livegame.api.event.DrawPropositionEvent;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.dto.CreateGameRequest;
 import com.trymad.litechess_monolith.websocket.api.dto.GameEventRequest;
 import com.trymad.litechess_monolith.websocket.api.dto.MoveRequest;
 import com.trymad.litechess_monolith.websocket.api.event.PlayerSurrenderEvent;
+import com.trymad.litechess_monolith.websocket.api.event.DeclineDrawRequestEvent;
+import com.trymad.litechess_monolith.websocket.api.event.DrawPropositionRequestEvent;
 import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 import com.trymad.litechess_monolith.websocket.api.model.GameEventType;
@@ -44,6 +48,16 @@ public class WebSocketController {
         final PlayerSurrenderEvent gameEvent = new PlayerSurrenderEvent(UUID.fromString(principal.getName()), gameId);
         logger.info(gameEvent.toString());
         eventPublisher.publish(gameEvent);
+      }
+
+      else if(gameEventRequest.event() == GameEventType.DRAW_PROPOSITION) {
+        final DrawPropositionRequestEvent event = new DrawPropositionRequestEvent(GameEventType.DRAW_PROPOSITION, gameId, UUID.fromString(principal.getName()));
+        eventPublisher.publish(event);
+      }
+
+      else if(gameEventRequest.event() == GameEventType.DRAW_DECLINE) {
+        final DeclineDrawRequestEvent event = new DeclineDrawRequestEvent(GameEventType.DRAW_DECLINE, gameId, UUID.fromString(principal.getName()));
+        eventPublisher.publish(event);
       }
     }
 
