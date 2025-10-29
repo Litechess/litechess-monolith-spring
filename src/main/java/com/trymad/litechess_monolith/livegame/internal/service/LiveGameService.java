@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Component;
@@ -145,6 +146,18 @@ public class LiveGameService  {
 			logger.info("TIMEOUT, WIN: " + status);
 			finishGame(gameId, status);
 		};
+	}
+
+	public void surrender(String gameId, UUID playerId) {
+		final LiveGame game = this.get(gameId);
+		final boolean isGamePlayer = game.getPlayerSides().values().stream().anyMatch(id -> id.equals(playerId));
+
+		if(!isGamePlayer) throw new IllegalArgumentException("Player " + playerId + " is not in game " + gameId);
+
+		final ChessGameStatus status = game.getPlayerSides().get(PlayerColor.WHITE).equals(playerId) ? 
+			ChessGameStatus.SURRENDER_WIN_BLACK : ChessGameStatus.SURRENDER_WIN_WHITE;
+
+		finishGame(gameId, status);
 	}
 
 	public void finishGame(String gameId, ChessGameStatus status) {
