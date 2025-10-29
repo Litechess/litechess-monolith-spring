@@ -2,9 +2,12 @@ package com.trymad.litechess_monolith.websocket.internal.controller;
 
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.dto.CreateGameRequest;
+import com.trymad.litechess_monolith.websocket.api.dto.GameEventRequest;
 import com.trymad.litechess_monolith.websocket.api.dto.MoveRequest;
+import com.trymad.litechess_monolith.websocket.api.event.PlayerSurrenderEvent;
 import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
+import com.trymad.litechess_monolith.websocket.api.model.GameEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +36,15 @@ public class WebSocketController {
       final MoveEvent moveEvent = new MoveEvent(moveRequest, gameId, UUID.fromString(principal.getName()));
       logger.info(moveRequest.toString());
       eventPublisher.publish(moveEvent);
+    }
+
+    @MessageMapping("{gameId}/events")
+    public void acceptMove(@Payload GameEventRequest gameEventRequest, @DestinationVariable("gameId") String gameId, Principal principal) {
+      if(gameEventRequest.event() == GameEventType.SURRENDER) {
+        final PlayerSurrenderEvent gameEvent = new PlayerSurrenderEvent(UUID.fromString(principal.getName()), gameId);
+        logger.info(gameEvent.toString());
+        eventPublisher.publish(gameEvent);
+      }
     }
 
     @MessageMapping("matchmaking/queue")
