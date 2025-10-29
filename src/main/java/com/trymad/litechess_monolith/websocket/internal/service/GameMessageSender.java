@@ -20,6 +20,7 @@ import com.trymad.litechess_monolith.livegame.api.event.LiveGameStartEvent;
 import com.trymad.litechess_monolith.websocket.api.dto.GameCreatedDTO;
 import com.trymad.litechess_monolith.websocket.api.dto.MoveResponse;
 import com.trymad.litechess_monolith.websocket.internal.model.GameResultMessage;
+import com.trymad.litechess_monolith.websocket.internal.controller.WebSocketController;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,7 +68,8 @@ public class GameMessageSender {
 			.setHeader("type", "gameFinish")
 			.build();
 
-		messagingTemplate.convertAndSend("/topic/game/" + event.finishedGame().id(), gameResult);
+		final String dist = String.format(WebSocketController.EVENT_TOPIC_TEMPLATE, event.finishedGame().id());
+		messagingTemplate.convertAndSend(dist, gameResult);
 	}
 
 	public void move(MoveAcceptedEvent event) {
@@ -75,7 +77,9 @@ public class GameMessageSender {
 			.withPayload(new MoveResponse(event.move(), event.timers(), Instant.now().toEpochMilli()))
 			.setHeader("type", "move")
 			.build();
-		messagingTemplate.convertAndSend("/topic/game/" + event.gameId(), message);
+			
+		final String dist = String.format(WebSocketController.MOVE_TOPIC_TEMPLATE, event.gameId());
+		messagingTemplate.convertAndSend(dist, message);
 	}
 
 }

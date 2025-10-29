@@ -21,11 +21,14 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class WebSocketController {
 
+    public static final String MOVE_TOPIC_TEMPLATE = "/topic/%s/moves";
+    public static final String EVENT_TOPIC_TEMPLATE = "/topic/%s/events";
+    public static final String CHAT_TOPIC_TEMPLATE = "/topic/%s/chat";
+
     private final EventPublisher eventPublisher;
     private final Logger logger = Logger.getLogger("websocket");
 
-    @MessageMapping("game/{gameId}")
-    // @SendTo("/topic/{gameId}/move")
+    @MessageMapping("{gameId}/moves")
     public void acceptMove(@Payload MoveRequest moveRequest, @DestinationVariable("gameId") String gameId, Principal principal) {
       final MoveEvent moveEvent = new MoveEvent(moveRequest, gameId, UUID.fromString(principal.getName()));
       logger.info(moveRequest.toString());
