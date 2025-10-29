@@ -15,11 +15,12 @@ import com.trymad.litechess_monolith.chessparty.api.event.GameCreatedEvent;
 import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 import com.trymad.litechess_monolith.livegame.api.dto.LiveGameDTO;
+import com.trymad.litechess_monolith.livegame.api.event.DeclineDrawEvent;
+import com.trymad.litechess_monolith.livegame.api.event.DrawPropositionEvent;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.livegame.api.event.LiveGameStartEvent;
 import com.trymad.litechess_monolith.websocket.api.dto.GameCreatedDTO;
 import com.trymad.litechess_monolith.websocket.api.dto.MoveResponse;
-import com.trymad.litechess_monolith.websocket.internal.model.GameResultMessage;
 import com.trymad.litechess_monolith.websocket.internal.controller.WebSocketController;
 
 import lombok.RequiredArgsConstructor;
@@ -55,7 +56,6 @@ public class GameMessageSender {
 		final GameCreatedDTO gameCreatedDTO = new GameCreatedDTO(id);
 		final Message<GameCreatedDTO> createdGame = MessageBuilder
 			.withPayload(gameCreatedDTO)
-			.setHeader("type", "gameCreated")
 			.build();
 		
 		users.forEach(user -> messagingTemplate.convertAndSendToUser(
@@ -63,9 +63,8 @@ public class GameMessageSender {
 	}
 
 	public void gameFinish(GameFinishEvent event) {
-		final Message<GameResultMessage> gameResult = MessageBuilder
-			.withPayload(new GameResultMessage(event.status()))
-			.setHeader("type", "gameFinish")
+		final Message<GameFinishEvent> gameResult = MessageBuilder
+			.withPayload(event)
 			.build();
 
 		final String dist = String.format(WebSocketController.EVENT_TOPIC_TEMPLATE, event.finishedGame().id());
@@ -79,6 +78,24 @@ public class GameMessageSender {
 			.build();
 			
 		final String dist = String.format(WebSocketController.MOVE_TOPIC_TEMPLATE, event.gameId());
+		messagingTemplate.convertAndSend(dist, message);
+	}
+
+	public void drawProposition(DrawPropositionEvent event) {
+		final Message<DrawPropositionEvent> message = MessageBuilder
+			.withPayload(event)
+			.build();
+			
+		final String dist = String.format(WebSocketController.EVENT_TOPIC_TEMPLATE, event.gameId());
+		messagingTemplate.convertAndSend(dist, message);
+	}
+
+	public void drawDecline(DeclineDrawEvent event) {
+		final Message<DeclineDrawEvent> message = MessageBuilder
+			.withPayload(event)
+			.build();
+			
+		final String dist = String.format(WebSocketController.EVENT_TOPIC_TEMPLATE, event.gameId());
 		messagingTemplate.convertAndSend(dist, message);
 	}
 

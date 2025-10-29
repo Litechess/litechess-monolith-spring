@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
@@ -17,6 +18,7 @@ public class LiveGame {
 	private final List<GameMove> moves = new LinkedList<>();
 	private final Map<PlayerColor, UUID> playerSides = new EnumMap<>(PlayerColor.class);
 	private final GameTimer gameTimer;
+	private UUID drawPropositionPlayer = null;
 
 	public LiveGame(ChessPartyDTO chessParty, GameTimer gameTimer) {
 		this.id = chessParty.id();
@@ -39,6 +41,7 @@ public class LiveGame {
 
 	public void applyMove(GameMove move) {
 		moves.add(move);
+		drawPropositionPlayer = null;
 
 		if(gameTimer != null) {
 			gameTimer.applyMove();
@@ -47,6 +50,18 @@ public class LiveGame {
 
 	public PlayerColor getCurrentTurnColor() {
 		return moves.size() % 2 == 0 ? PlayerColor.WHITE : PlayerColor.BLACK;
+	}
+
+	public boolean isDrawProposed() {
+		return drawPropositionPlayer != null;
+	}
+
+	public void proposeDraw(UUID playerId) {
+		drawPropositionPlayer = playerId;
+	}
+
+	public Optional<UUID> getDrawSender() {
+		return Optional.ofNullable(drawPropositionPlayer);
 	}
 
 	public UUID getPlayer(PlayerColor color) {

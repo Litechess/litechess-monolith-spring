@@ -16,6 +16,8 @@ import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 import com.trymad.litechess_monolith.chessparty.api.model.TimeControlType;
+import com.trymad.litechess_monolith.livegame.api.event.DeclineDrawEvent;
+import com.trymad.litechess_monolith.livegame.api.event.DrawPropositionEvent;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.livegame.api.event.LiveGameStartEvent;
 import com.trymad.litechess_monolith.livegame.internal.controller.filter.LiveGameFilter;
@@ -28,6 +30,7 @@ import com.trymad.litechess_monolith.livegame.internal.model.TimerHistory;
 import com.trymad.litechess_monolith.livegame.internal.repository.LiveGameRepository;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
+import com.trymad.litechess_monolith.websocket.api.model.GameEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -111,6 +114,10 @@ public class LiveGameService  {
 
 		final Map<PlayerColor, Long> timers = liveGame.getTimer() == null ? null : new HashMap<>();
 
+		if(liveGame.isDrawProposed()) {
+			declineDraw(liveGame, event.playerId());
+		}
+
 		liveGame.applyMove(move);
 		if(liveGame.getTimer() != null) {
 			final GameTimer gameTimer = liveGame.getTimer();
@@ -150,7 +157,7 @@ public class LiveGameService  {
 
 	public void surrender(String gameId, UUID playerId) {
 		final LiveGame game = this.get(gameId);
-		final boolean isGamePlayer = game.getPlayerSides().values().stream().anyMatch(id -> id.equals(playerId));
+		final boolean isGamePlayer = isPlayerInGame(game, playerId);
 
 		if(!isGamePlayer) throw new IllegalArgumentException("Player " + playerId + " is not in game " + gameId);
 
@@ -160,10 +167,48 @@ public class LiveGameService  {
 		finishGame(gameId, status);
 	}
 
-	public void finishGame(String gameId, ChessGameStatus status) {
-		gameTimeService.stopTimer(gameId);
+	public void drawProposition(LiveGame game, UUID playerId) {
+		final boolean isGamePlayer = isPlayerInGame(game, playerId);
+
+		if(!isGamePlayer) throw new IllegalArgumentException("Player " + playerId + " is not in game " + game.getId());
+
+		if(game.isDrawProposed()) {
+			if(game.getDrawSender().get().equals(playerId)) return;
+			finishGame(game.getId(), ChessGameStatus.DRAW);
+			return;
+		}
+
+		game.proposeDraw(playerId);
 		
+		final DrawPropositionEvent event = new DrawPropositionEvent(GameEventType.DRAW_PROPOSITION, game.getId(), playerId);
+		eventPublisher.publish(event);
+	}
+
+	public void drawProposition(String gameId, UUID playerId) {
 		final LiveGame game = this.get(gameId);
+		drawProposition(game, playerId);
+	}
+
+	public void declineDraw(String gameId, UUID playerId) {
+		final LiveGame game = this.get(gameId);
+		declineDraw(game, playerId);
+	}
+
+	public void declineDraw(LiveGame game, UUID playerId) {
+		final boolean isGamePlayer = isPlayerInGame(game, playerId);
+		if(!isGamePlayer) throw new IllegalArgumentException("Player " + playerId + " is not in game " + game.getId());
+
+		final DeclineDrawEvent declineDrawEvent = new DeclineDrawEvent(GameEventType.DRAW_DECLINE, game.getId(), playerId);
+		eventPublisher.publish(declineDrawEvent);
+	}
+
+	private boolean isPlayerInGame(LiveGame game, UUID playerId) {
+		return game.getPlayerSides().values().stream().anyMatch(id -> id.equals(playerId));
+	}
+
+	public void finishGame(LiveGame game, ChessGameStatus status) {
+		gameTimeService.stopTimer(game.getId());
+		
 		if(game.getTimer() != null) {
 			game.getTimer().stop();
 			if(status == ChessGameStatus.TIMEOUT_WIN_BLACK || status == ChessGameStatus.TIMEOUT_WIN_WHITE) {
@@ -171,10 +216,15 @@ public class LiveGameService  {
 			}
 		}
 
-		final GameFinishEvent event = new GameFinishEvent(liveGameMapper.toDto(game), status);
+		final GameFinishEvent event = new GameFinishEvent(GameEventType.GAME_FINISH, liveGameMapper.toDto(game), status);
 		eventPublisher.publish(event);
 
-		liveGameRepository.delete(gameId);
-		emulatorService.deleteEmulator(gameId);
+		liveGameRepository.delete(game.getId());
+		emulatorService.deleteEmulator(game.getId());
+	}
+
+	public void finishGame(String gameId, ChessGameStatus status) {
+		final LiveGame game = this.get(gameId);
+		finishGame(game, status);
 	}
 }
