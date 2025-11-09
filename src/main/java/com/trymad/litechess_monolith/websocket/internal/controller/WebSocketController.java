@@ -1,7 +1,5 @@
 package com.trymad.litechess_monolith.websocket.internal.controller;
 
-import com.trymad.litechess_monolith.livegame.api.event.DeclineDrawEvent;
-import com.trymad.litechess_monolith.livegame.api.event.DrawPropositionEvent;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.dto.CreateGameRequest;
 import com.trymad.litechess_monolith.websocket.api.dto.GameEventRequest;
