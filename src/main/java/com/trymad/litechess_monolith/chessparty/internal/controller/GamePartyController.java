@@ -41,9 +41,12 @@ public class GamePartyController {
 	@GetMapping
 	public List<ChessPartyDTO> getAll(
 		@RequestParam(required = false) UUID ownerId,
-		@RequestParam(required = false) UUID oponentId) {
-		final ChessPartyFilter filter = new ChessPartyFilter(ownerId, oponentId);
+		@RequestParam(required = false) UUID oponentId,
+		@RequestParam(required = false, defaultValue = "false") boolean live,
+		@RequestParam(required = false, defaultValue = "true") boolean finish) {
+		final ChessPartyFilter filter = new ChessPartyFilter(ownerId, oponentId, live, finish);
 
 		return mapper.toDto(chessPartyService.get(filter));
 	}
+	
 }
