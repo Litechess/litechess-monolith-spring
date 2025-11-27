@@ -119,8 +119,10 @@ public class ChessPartyService {
 				
 				final boolean isOwnerContains = (whiteId.equals(filter.ownerId()) || blackId.equals(filter.ownerId())) || filter.ownerId() == null;
 				final boolean isOponentContains = (whiteId.equals(filter.oponentId()) || blackId.equals(filter.oponentId())) || filter.oponentId() == null;
-				
-				return isOponentContains && isOwnerContains;
+				final boolean isLive = (chessParty.getStatus().equals(ChessGameStatus.NOT_FINISHED) && filter.live());
+				final boolean isFinish = (chessParty.getStatus().equals(ChessGameStatus.NOT_FINISHED) == false && filter.finish());
+
+				return isOponentContains && isOwnerContains && (isLive || isFinish);
 			})
             .collect(Collectors.toList());
 		
