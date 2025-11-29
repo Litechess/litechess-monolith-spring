@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: litechess-monolith
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_REALM_URL}
+  data:
+    mongodb:
+      uri: ${MONGODB_URL}
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+# logging:
+#   level:
+#     org.springframework.messaging: DEBUG
+#     org.springframework.security: DEBUG

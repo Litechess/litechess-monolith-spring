@@ -1,5 +1,7 @@
 package com.trymad.litechess_monolith.users.api.dto;
 
-public record UserInfoCreateDTO(String nickname) {
+import java.util.UUID;
+
+public record UserInfoCreateDTO(UUID id, String nickname) {
 	
 }
