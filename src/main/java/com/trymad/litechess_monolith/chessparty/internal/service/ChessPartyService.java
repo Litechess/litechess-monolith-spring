@@ -100,7 +100,6 @@ public class ChessPartyService {
 		final PlayerInfo black = this.getPlayerInfo(event.players().get(blackIndex));
 		final TimeControlDTO timeControl = event.gameRequest().timeControl();
 		
-
 		final ChessParty chessParty = this.save(new CreatePartyDTO(
 			white,
 			black,

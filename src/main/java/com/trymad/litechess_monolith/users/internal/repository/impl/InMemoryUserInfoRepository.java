@@ -1,5 +1,6 @@
 package com.trymad.litechess_monolith.users.internal.repository.impl;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,13 +19,13 @@ public class InMemoryUserInfoRepository implements UserInfoRepository {
 	public InMemoryUserInfoRepository() {
 		final UserInfo first = new UserInfo(
 			UUID.fromString("8e455873-e706-4b0d-b1f4-a19291fd99d6"),
-			"KalorNickname");
+			"KalorNickname", LocalDateTime.now());
 		final UserInfo second = new UserInfo(
 			UUID.fromString("ecccb4d8-4fad-45c4-b073-e77b4ec1ddbe"),
-			"OlegNickname");
+			"OlegNickname", LocalDateTime.now());
 		final UserInfo third = new UserInfo(
 			UUID.fromString("e46b3462-1636-4666-893b-c108ad816426"),
-			"VladNickname");
+			"VladNickname", LocalDateTime.now());
 		db.put(first.getId(), first);
 		db.put(second.getId(), second);
 		db.put(third.getId(), third);
@@ -37,8 +38,8 @@ public class InMemoryUserInfoRepository implements UserInfoRepository {
 
 	@Override
 	public UserInfo save(UserInfoCreateDTO info) {
-		final UUID id = UUID.randomUUID();
-		final UserInfo infoEntity = new UserInfo(id, info.nickname());
+		final UUID id = info.id();
+		final UserInfo infoEntity = new UserInfo(id, info.nickname(), LocalDateTime.now());
 		return db.put(id, infoEntity);
 	}
 	
