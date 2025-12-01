@@ -21,6 +21,8 @@ public class UserInfoService {
 		return repository.findById(id).orElseThrow( () -> new RuntimeException("User " + id + " not found"));
 	}
 
+
+	// check if user with same id in token
 	public UserInfo create(UserInfoCreateDTO createDto) {
 		final UserInfo userInfo = new UserInfo(createDto.id(), createDto.nickname(), LocalDateTime.now());
 		return repository.save(userInfo);

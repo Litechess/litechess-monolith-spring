@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 
-// TODO delete parties if chearedAt >  month. else change status to PAUSE for NOT_FINISHED
+
 public class GameCleanerOnLaunch {
 	
 	private final ChessPartyService chessPartyService;
