@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/online")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://192.168.0.105:5173")
 public class OnlineUserController {
 	
 	private final OnlineUserService onlineUserService;
