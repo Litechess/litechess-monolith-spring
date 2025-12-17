@@ -1,29 +1,34 @@
 spring:
   application:
-    name: litechess-monolith
+    name: litechess-modulith
+
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${KEYCLOAK_REALM_URL}
+
   data:
     mongodb:
-      uri: ${MONGODB_URL}
+      host: ${MONGODB_HOST}
+      port: ${MONGODB_PORT:27017}
+      database: ${MONGODB_DATABASE}
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      authentication-database: ${MONGODB_AUTH_DB}
+
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: update
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
-# logging:
-#   level:
-#     org.springframework.messaging: DEBUG
-#     org.springframework.security: DEBUG
