@@ -99,6 +99,10 @@ public class LiveGameService  {
 	// need refactor with emulator when microservice migration
 	public void playMove(MoveEvent event) {
 		final LiveGame liveGame = this.get(event.gameId());
+		logger.info("=====================livegame======================");
+		logger.info(liveGame.toString());
+		logger.info("=====================MoveEvent======================");
+		logger.info(event.toString());
 		if(event.playerId().equals(liveGame.getPlayer(liveGame.getCurrentTurnColor())) == false) {
 			throw new IllegalStateException("It's not player turn: " + event.playerId());
 		}
@@ -133,6 +137,8 @@ public class LiveGameService  {
 		final MoveAcceptedEvent acceptedMoveEvent = 
 			new MoveAcceptedEvent(move, event.gameId(), timers);
 		eventPublisher.publish(acceptedMoveEvent);
+
+		logger.info("Move applied");
 
 		liveGameRepository.save(liveGame);
 

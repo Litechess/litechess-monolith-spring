@@ -12,6 +12,9 @@ import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 import com.trymad.litechess_monolith.chessparty.api.model.TimeControlType;
 
+import lombok.ToString;
+
+@ToString
 public class LiveGame {
 
 	private final String id;
