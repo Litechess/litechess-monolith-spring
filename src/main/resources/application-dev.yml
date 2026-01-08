@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: litechess-modulith
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://localhost/identity/realms/vue-test
+          jwk-set-uri: http://localhost:8000/identity/realms/vue-test/protocol/openid-connect/certs
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: neochess
+      username: root
+      password: password
+      authentication-database: admin
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/litechess
+    username: postgres
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+
+app:
+  cors:
+    allowed-origins: localhost
