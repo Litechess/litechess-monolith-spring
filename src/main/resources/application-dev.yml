@@ -32,4 +32,8 @@ server:
 
 app:
   cors:
-    allowed-origins: localhost
+    allowed-origins: https://localhost
+logging:
+  level:
+    org.springframework.web.cors: TRACE
+    org.springframework.security: DEBUG
