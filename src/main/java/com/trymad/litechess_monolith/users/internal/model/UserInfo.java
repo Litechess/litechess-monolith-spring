@@ -25,6 +25,9 @@ public class UserInfo {
 	@Column(unique = true, nullable = false)
 	private String nickname;
 
+	@Column(nullable = true)
+	private String avatarKey; 
+
 	@Column(nullable = false)
 	private LocalDateTime createdAt;
 

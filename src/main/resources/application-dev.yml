@@ -26,13 +26,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
 server:
   port: 8080
-
 app:
   cors:
     allowed-origins: https://localhost
+
+s3:
+  endpoint: http://localhost:9000
+  access-key: miniouser
+  secret-key: miniopassword
+  region: us-east-1
+  bucket: litechess
+
 logging:
   level:
     org.springframework.web.cors: TRACE
