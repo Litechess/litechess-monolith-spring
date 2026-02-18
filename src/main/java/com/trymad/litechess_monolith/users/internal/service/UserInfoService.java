@@ -76,4 +76,14 @@ public class UserInfoService {
             repository.save(user);
         }
     }
+
+	public String getAvatarDownloadUrl(UUID userId) {
+		UserInfo user = get(userId);
+
+		if (user.getAvatarKey() == null) {
+			return null;
+		}
+
+		return avatarStorage.generateDownloadUrl(user.getAvatarKey());
+	}
 }

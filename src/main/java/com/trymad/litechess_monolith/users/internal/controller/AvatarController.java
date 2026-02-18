@@ -30,4 +30,9 @@ public class AvatarController {
     public void delete(@PathVariable UUID userId) {
         userInfoService.removeAvatar(userId);
     }
+
+    @GetMapping
+    public String getAvatarUrl(@PathVariable UUID userId) {
+        return userInfoService.getAvatarDownloadUrl(userId);
+    }
 }
