@@ -7,5 +7,7 @@ public interface UserAvatarStorage {
     String storeAvatar(String userId, InputStream content, long contentLength);
 
     void deleteAvatar(String userId);
-	
+
+	String generateDownloadUrl(String avatarKey);
+
 }
