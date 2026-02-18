@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.trymad.litechess_monolith.users.api.dto.UserInfoCreateDTO;
+import com.trymad.litechess_monolith.users.api.dto.UserInfoDTO;
 import com.trymad.litechess_monolith.users.api.storage.UserAvatarStorage;
 import com.trymad.litechess_monolith.users.internal.model.UserInfo;
 import com.trymad.litechess_monolith.users.internal.repository.JpaUserInfoRepository;
@@ -26,6 +27,29 @@ public class UserInfoService {
 	@Transactional
 	public UserInfo get(UUID id) {
 		return repository.findById(id).orElseThrow( () -> new RuntimeException("User " + id + " not found"));
+	}
+
+
+	@Transactional
+	public UserInfoDTO getDto(UUID id) {
+		final UserInfo userInfo = get(id);
+		return getDto(userInfo);
+	}
+
+	@Transactional
+	public UserInfoDTO getDto(UserInfo userInfo) {
+        String avatarUrl = null;
+
+        if (userInfo.getAvatarKey() != null) {
+            avatarUrl = avatarStorage.generateDownloadUrl(userInfo.getAvatarKey());
+        }
+
+        return new UserInfoDTO(
+                userInfo.getId(),
+                userInfo.getNickname(),
+                userInfo.getCreatedAt(),
+                avatarUrl
+        );
 	}
 
 	
