@@ -6,8 +6,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://localhost/identity/realms/vue-test
-          jwk-set-uri: http://localhost:8000/identity/realms/vue-test/protocol/openid-connect/certs
+          issuer-uri: https://identity.localhost/realms/vue-test
+          jwk-set-uri: https://identity.localhost/realms/vue-test/protocol/openid-connect/certs
 
   data:
     mongodb:
@@ -33,7 +33,7 @@ app:
     allowed-origins: https://localhost
 
 s3:
-  endpoint: http://localhost:9000
+  url: https://s3.localhost
   access-key: miniouser
   secret-key: miniopassword
   region: us-east-1
