@@ -29,9 +29,9 @@ public class S3UserAvatarStorageImpl implements UserAvatarStorage {
     @Override
     public String storeAvatar(String userId, InputStream content, long contentLength) {
 
-        String key = buildKey(userId);
+        final String key = buildKey(userId);
 
-        PutObjectRequest request = PutObjectRequest.builder()
+        final PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(props.bucket())
                 .key(key)
                 .contentType("image/jpeg") 
@@ -46,9 +46,9 @@ public class S3UserAvatarStorageImpl implements UserAvatarStorage {
     @Override
     public void deleteAvatar(String userId) {
 
-        String key = buildKey(userId);
+        final String key = buildKey(userId);
 
-        DeleteObjectRequest request = DeleteObjectRequest.builder()
+        final DeleteObjectRequest request = DeleteObjectRequest.builder()
                 .bucket(props.bucket())
                 .key(key)
                 .build();
@@ -63,19 +63,18 @@ public class S3UserAvatarStorageImpl implements UserAvatarStorage {
 	@Override
 	public String generateDownloadUrl(String avatarKey) {
 
-		System.out.println(props.bucket());
-		GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+		final GetObjectRequest getObjectRequest = GetObjectRequest.builder()
 				.bucket(props.bucket())
 				.key(avatarKey)
 				.build();
 
-		GetObjectPresignRequest presignRequest =
+		final GetObjectPresignRequest presignRequest =
 				GetObjectPresignRequest.builder()
 						.signatureDuration(Duration.ofMinutes(5)) 
 						.getObjectRequest(getObjectRequest)
 						.build();
 
-		PresignedGetObjectRequest presigned =
+		final PresignedGetObjectRequest presigned =
 				presigner.presignGetObject(presignRequest);
 
 		return presigned.url().toString();
