@@ -19,7 +19,7 @@ public class SpringLivegameGameCreatedEventListener implements EventListener<Gam
 	@org.springframework.context.event.EventListener
 	@Async
 	public void handle(GameCreatedEvent event) {
-		liveGameService.create(event.chessParty());
+		liveGameService.create(event.chessParty(), event.source());
 	}
 	
 }

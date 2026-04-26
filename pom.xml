@@ -166,7 +166,7 @@
 						</exclude>
 					</excludes>
 					<image>
-						<name>litechess-modulith</name>
+						<name>litechess-modulith:1.1</name>
 						<bindings>
 							<binding>
 								${project.basedir}/bindings:/platform/bindings

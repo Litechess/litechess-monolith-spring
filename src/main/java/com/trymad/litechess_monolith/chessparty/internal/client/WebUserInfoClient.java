@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class WebUserInfoClient implements UserInfoClient {
 
+	// TODO change to env url
 	private final WebClient client = WebClient.create("http://localhost:8080");
 
 	@Override
