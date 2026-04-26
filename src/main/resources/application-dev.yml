@@ -33,7 +33,8 @@ app:
     allowed-origins: https://localhost
 
 s3:
-  url: https://s3.localhost
+  public_url: https://s3.localhost
+  internal_url: http://localhost:9000
   access-key: miniouser
   secret-key: miniopassword
   region: us-east-1

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.trymad.litechess_monolith.chessparty.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessparty.api.dto.TimeControlDTO;
 import com.trymad.litechess_monolith.chessparty.api.event.GameCreatedEvent;
+import com.trymad.litechess_monolith.chessparty.api.event.GameSource;
 import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
+import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerInfo;
 import com.trymad.litechess_monolith.chessparty.internal.client.UserInfoClient;
 import com.trymad.litechess_monolith.chessparty.internal.controller.filter.ChessPartyFilter;
@@ -22,6 +24,8 @@ import com.trymad.litechess_monolith.chessparty.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessparty.internal.repository.ChessPartyRepository;
 import com.trymad.litechess_monolith.livegame.api.dto.LiveGameDTO;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
+import com.trymad.litechess_monolith.matchmaking.api.dto.ChallengeDTO;
+import com.trymad.litechess_monolith.matchmaking.api.event.ChallengeAcceptedEvent;
 import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
 import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.users.api.dto.UserInfoDTO;
@@ -77,12 +81,33 @@ public class ChessPartyService {
 		chessPartyRepository.deleteAll(parties);
 	}
 
-	public ChessParty save(CreatePartyDTO createGameDTO) {
-		final ChessParty chessParty = createMapper.toEntity(createGameDTO);
+	public ChessParty save(CreatePartyDTO createGameDTO, ChessGameStatus status) {
+		if(!status.equals(ChessGameStatus.NOT_FINISHED)) {
+			throw new IllegalArgumentException("Incorrect party status when create");
+		}
+
+		return this.internalSave(createGameDTO, status, null);
+	}
+
+	public ChessParty save(CreatePartyDTO dto, ChessGameStatus status, String gameId) {
+		if(gameId != null && chessPartyRepository.existsById(gameId)) {
+			throw new IllegalArgumentException("Game id with " + gameId + "already exists");
+		}
+
+		return this.internalSave(dto, status, gameId);
+	}
+
+	private ChessParty internalSave(CreatePartyDTO dto, ChessGameStatus status, String gameId) {
+		if(!status.equals(ChessGameStatus.NOT_FINISHED)) {
+			throw new IllegalArgumentException("Incorrect party status when create");
+		}
+
+		final ChessParty chessParty = createMapper.toEntity(dto);
 
 		chessParty.setInitFen(DEFAULT_INIT_FEN);
-		chessParty.setStatus(ChessGameStatus.NOT_FINISHED);
-		chessParty.setTimeControl(timeControlMapper.toEntity(createGameDTO.timeControl()));
+		chessParty.setStatus(status);
+		chessParty.setTimeControl(timeControlMapper.toEntity(dto.timeControl()));
+		chessParty.setId(gameId);
 
 		return chessPartyRepository.save(chessParty);
 	}
@@ -92,7 +117,7 @@ public class ChessPartyService {
 		return new PlayerInfo(infoDto.id(), infoDto.nickname());
 	}
 
-	public void createGame(GameFindedEvent event) {
+	public ChessParty createGame(GameFindedEvent event) {
 		final int whiteIndex = ThreadLocalRandom.current().nextInt(2);
 		final int blackIndex = whiteIndex == 0 ? 1 : 0;
 		
@@ -100,12 +125,42 @@ public class ChessPartyService {
 		final PlayerInfo black = this.getPlayerInfo(event.players().get(blackIndex));
 		final TimeControlDTO timeControl = event.gameRequest().timeControl();
 		
+		return createGame(new CreatePartyDTO(white, black, timeControl), GameSource.MATCHMAKING, null);
+	}
+
+	public ChessParty createGame(ChallengeAcceptedEvent event) {
+
+		final ChallengeDTO challengeDTO = event.challengeDTO();
+		PlayerInfo white;
+		PlayerInfo black;
+		
+		// TODO refactor player side choose code
+		if(challengeDTO.initiatorSide() == null) {
+			final int randomSide = ThreadLocalRandom.current().nextInt(2);
+			final UUID whiteId = randomSide == 0 ? challengeDTO.initiator() : challengeDTO.opponent();
+			final UUID blackId = randomSide == 0 ? challengeDTO.opponent() : challengeDTO.initiator();
+
+			white = this.getPlayerInfo(whiteId);
+			black = this.getPlayerInfo(blackId);
+		} else {
+			white = challengeDTO.initiatorSide().equals(PlayerColor.WHITE) ? 
+				this.getPlayerInfo(challengeDTO.initiator()) : this.getPlayerInfo(challengeDTO.opponent());
+			black = challengeDTO.initiatorSide().equals(PlayerColor.BLACK) ? 
+				this.getPlayerInfo(challengeDTO.initiator()) : this.getPlayerInfo(challengeDTO.opponent());
+		}
+
+		return createGame(new CreatePartyDTO(white, black, challengeDTO.timeControl()), GameSource.CHALLENGE, challengeDTO.id());
+	}
+
+	public ChessParty createGame(CreatePartyDTO dto, GameSource source, String gameId) {
 		final ChessParty chessParty = this.save(new CreatePartyDTO(
-			white,
-			black,
-			timeControl));
+			dto.white(),
+			dto.black(),
+			dto.timeControl()), 
+			ChessGameStatus.NOT_FINISHED, gameId);
 			
-		eventPublisher.publish(new GameCreatedEvent(mapper.toDto(chessParty))); 
+		eventPublisher.publish(new GameCreatedEvent(mapper.toDto(chessParty), source)); 
+		return chessParty;
 	}
 
 	public List<ChessParty> get(ChessPartyFilter filter) {

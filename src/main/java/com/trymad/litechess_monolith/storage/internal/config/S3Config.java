@@ -18,7 +18,7 @@ public class S3Config {
 	@Bean
 	S3Client internalS3Client(S3Properties properties) {
 		return S3Client.builder()
-			.endpointOverride(URI.create(properties.url()))
+			.endpointOverride(URI.create(properties.internalUrl()))
 			.region(Region.of(properties.region()))
 			.credentialsProvider(StaticCredentialsProvider.create(
 				AwsBasicCredentials.create(
@@ -35,9 +35,9 @@ public class S3Config {
 	}
 
     @Bean
-    public S3Presigner s3Presigner(S3Properties properties) {
+    S3Presigner s3Presigner(S3Properties properties) {
         return S3Presigner.builder()
-                .endpointOverride(URI.create(properties.url()))
+                .endpointOverride(URI.create(properties.publicUrl()))
                 .region(Region.of(properties.region()))
 				.serviceConfiguration(              
 						S3Configuration.builder()

@@ -12,13 +12,11 @@ import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
 import com.trymad.litechess_monolith.chessparty.api.event.GameCreatedEvent;
+import com.trymad.litechess_monolith.chessparty.api.event.GameSource;
 import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
-import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
-import com.trymad.litechess_monolith.livegame.api.dto.LiveGameDTO;
 import com.trymad.litechess_monolith.livegame.api.event.DeclineDrawEvent;
 import com.trymad.litechess_monolith.livegame.api.event.DrawPropositionEvent;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
-import com.trymad.litechess_monolith.livegame.api.event.LiveGameStartEvent;
 import com.trymad.litechess_monolith.websocket.api.dto.GameCreatedDTO;
 import com.trymad.litechess_monolith.websocket.api.dto.MoveResponse;
 import com.trymad.litechess_monolith.websocket.internal.controller.WebSocketController;
@@ -39,27 +37,24 @@ public class GameMessageSender {
 		users.add(chessParty.black().id());
 		users.add(chessParty.white().id());
 
-		gameCreate(chessParty.id(), users);
+		gameCreate(chessParty.id(), users, event.source());
 
-	}
-
-	public void gameCreate(LiveGameStartEvent event) {
-		final LiveGameDTO liveGame = event.dto();
-		final List<UUID> users = new ArrayList<>();
-		users.add(liveGame.playerSides().get(PlayerColor.WHITE));
-		users.add(liveGame.playerSides().get(PlayerColor.BLACK));
-
-		gameCreate(liveGame.id(), users);
 	}
 	
-	private void gameCreate(String id, List<UUID> users) {
+	private void gameCreate(String id, List<UUID> users, GameSource source) {
 		final GameCreatedDTO gameCreatedDTO = new GameCreatedDTO(id);
 		final Message<GameCreatedDTO> createdGame = MessageBuilder
 			.withPayload(gameCreatedDTO)
 			.build();
 		
-		users.forEach(user -> messagingTemplate.convertAndSendToUser(
-			user.toString(), "/topic/matchmaking/queue", createdGame));
+		if(source.equals(GameSource.MATCHMAKING)) {
+			users.forEach(user -> messagingTemplate.convertAndSendToUser(
+				user.toString(), "/topic/matchmaking/queue", createdGame));
+		}
+		if(source.equals(GameSource.CHALLENGE)) {
+			final String dist = String.format(WebSocketController.EVENT_TOPIC_TEMPLATE, id);
+			users.forEach(user -> messagingTemplate.convertAndSend(dist, gameCreatedDTO));
+		}
 	}
 
 	public void gameFinish(GameFinishEvent event) {

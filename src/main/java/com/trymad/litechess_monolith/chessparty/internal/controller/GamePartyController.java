@@ -5,9 +5,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessparty.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessparty.internal.controller.filter.ChessPartyFilter;
 import com.trymad.litechess_monolith.chessparty.internal.mapper.ChessPartyMapper;
 import com.trymad.litechess_monolith.chessparty.internal.model.ChessParty;
+import com.trymad.litechess_monolith.chessparty.internal.repository.impl.mongo.IdGeneratorService;
 import com.trymad.litechess_monolith.chessparty.internal.service.ChessPartyService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class GamePartyController {
 	
 	private final ChessPartyService chessPartyService;
 	private final ChessPartyMapper mapper;
+	private final IdGeneratorService idGeneratorService;
 
 	@GetMapping("/{id}")
 	public ChessPartyDTO getChessParty(@PathVariable String id) {
@@ -46,5 +49,9 @@ public class GamePartyController {
 
 		return mapper.toDto(chessPartyService.get(filter));
 	}
-	
+
+	@GetMapping("/uniqueId")
+	public String getUniqueId() {
+		return idGeneratorService.generateUniqueId();
+	}
 }

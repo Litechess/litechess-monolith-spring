@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
+import com.trymad.litechess_monolith.chessparty.api.event.GameSource;
 import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
@@ -50,7 +51,7 @@ public class LiveGameService  {
 
 	private final Logger logger = Logger.getLogger("liveService");
 
-	public LiveGame create(ChessPartyDTO chessParty) {
+	public LiveGame create(ChessPartyDTO chessParty, GameSource source) {
 		if(chessParty.status() != ChessGameStatus.NOT_FINISHED) {
 			throw new IllegalStateException("Can't create live game for finished party: " + chessParty.id());
 		}
@@ -69,7 +70,7 @@ public class LiveGameService  {
 		}
 
 
-		final LiveGameStartEvent event = new LiveGameStartEvent(liveGameMapper.toDto(gameFromRepo));
+		final LiveGameStartEvent event = new LiveGameStartEvent(liveGameMapper.toDto(gameFromRepo), source);
 		eventPublisher.publish(event);
 
 		return gameFromRepo;
