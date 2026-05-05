@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trymad.litechess_monolith.chessparty.api.dto.ChessPartyDTO;
-import com.trymad.litechess_monolith.chessparty.api.dto.CreatePartyDTO;
 import com.trymad.litechess_monolith.chessparty.internal.controller.filter.ChessPartyFilter;
 import com.trymad.litechess_monolith.chessparty.internal.mapper.ChessPartyMapper;
 import com.trymad.litechess_monolith.chessparty.internal.model.ChessParty;
