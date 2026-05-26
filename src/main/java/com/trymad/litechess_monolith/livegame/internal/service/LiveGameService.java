@@ -17,6 +17,7 @@ import com.trymad.litechess_monolith.chessparty.api.model.ChessGameStatus;
 import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
 import com.trymad.litechess_monolith.chessparty.api.model.TimeControlType;
+import com.trymad.litechess_monolith.infrastructure.event.EventPublisher;
 import com.trymad.litechess_monolith.livegame.api.event.DeclineDrawEvent;
 import com.trymad.litechess_monolith.livegame.api.event.DrawPropositionEvent;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
@@ -29,7 +30,6 @@ import com.trymad.litechess_monolith.livegame.internal.model.GameTimer;
 import com.trymad.litechess_monolith.livegame.internal.model.LiveGame;
 import com.trymad.litechess_monolith.livegame.internal.model.TimerHistory;
 import com.trymad.litechess_monolith.livegame.internal.repository.LiveGameRepository;
-import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.MoveEvent;
 import com.trymad.litechess_monolith.websocket.api.model.GameEventType;
 

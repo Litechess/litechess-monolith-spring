@@ -1,10 +1,12 @@
 package com.trymad.litechess_monolith.matchmaking.internal.service.impl;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
+import com.trymad.litechess_monolith.infrastructure.event.EventPublisher;
 import com.trymad.litechess_monolith.matchmaking.api.dto.CreateChallengeDTO;
 import com.trymad.litechess_monolith.matchmaking.api.event.ChallengeAcceptedEvent;
 import com.trymad.litechess_monolith.matchmaking.api.model.ChallengeStatus;
@@ -13,7 +15,6 @@ import com.trymad.litechess_monolith.matchmaking.internal.mapper.ChallengeMapper
 import com.trymad.litechess_monolith.matchmaking.internal.model.Challenge;
 import com.trymad.litechess_monolith.matchmaking.internal.repository.ChallengeRepository;
 import com.trymad.litechess_monolith.matchmaking.internal.service.ChallengeService;
-import com.trymad.litechess_monolith.shared.event.EventPublisher;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,6 +71,11 @@ public class ChallengeServiceImpl implements ChallengeService {
 
 		challenge.setStatus(ChallengeStatus.CREATED);
 		return challenge;
+	}
+
+	@Override
+	public List<Challenge> getAll() {
+		return challengeRepository.findAll();
 	}
 	
 }

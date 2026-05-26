@@ -3,9 +3,9 @@ package com.trymad.litechess_monolith.matchmaking.internal.listener.queueLeave;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.trymad.litechess_monolith.infrastructure.event.EventListener;
 import com.trymad.litechess_monolith.matchmaking.api.event.QueueLeaveEvent;
 import com.trymad.litechess_monolith.matchmaking.internal.service.MatchmakingQueueService;
-import com.trymad.litechess_monolith.shared.event.EventListener;
 
 import lombok.RequiredArgsConstructor;
 

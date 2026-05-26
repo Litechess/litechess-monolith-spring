@@ -1,5 +1,6 @@
 package com.trymad.litechess_monolith.matchmaking.internal.repository.impl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -33,5 +34,11 @@ public class InMemoryChallengeRepository implements ChallengeRepository {
     @Override
     public void delete(String id) {
         storage.remove(id);
+    }
+
+    @Override
+    public List<Challenge> findAll() {
+        final Challenge[] challenges = new Challenge[storage.size()];
+        return List.of(storage.values().toArray(challenges));
     }
 }

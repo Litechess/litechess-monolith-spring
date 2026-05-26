@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.trymad.litechess_monolith.chessparty.api.model.GameMove;
 import com.trymad.litechess_monolith.chessparty.api.model.PlayerColor;
-import com.trymad.litechess_monolith.shared.event.DomainEvent;
+import com.trymad.litechess_monolith.infrastructure.event.DomainEvent;
 
 public record MoveAcceptedEvent(
 	GameMove move, String gameId, Map<PlayerColor, Long> timers

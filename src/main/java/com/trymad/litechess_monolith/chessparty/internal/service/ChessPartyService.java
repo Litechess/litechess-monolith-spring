@@ -22,12 +22,12 @@ import com.trymad.litechess_monolith.chessparty.internal.mapper.LiveGameMapper;
 import com.trymad.litechess_monolith.chessparty.internal.mapper.TimeControlMapper;
 import com.trymad.litechess_monolith.chessparty.internal.model.ChessParty;
 import com.trymad.litechess_monolith.chessparty.internal.repository.ChessPartyRepository;
+import com.trymad.litechess_monolith.infrastructure.event.EventPublisher;
 import com.trymad.litechess_monolith.livegame.api.dto.LiveGameDTO;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
 import com.trymad.litechess_monolith.matchmaking.api.dto.ChallengeDTO;
 import com.trymad.litechess_monolith.matchmaking.api.event.ChallengeAcceptedEvent;
 import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
-import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.users.api.dto.UserInfoDTO;
 
 import lombok.RequiredArgsConstructor;

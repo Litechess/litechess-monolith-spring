@@ -2,6 +2,7 @@ package com.trymad.litechess_monolith;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.modulith.core.ApplicationModules;
 
 @SpringBootTest
 class LitechessMonolithApplicationTests {
@@ -12,7 +13,10 @@ class LitechessMonolithApplicationTests {
 
     @Test
     void verifyArchitecture() {
-        // ApplicationModules modules = ApplicationModules.of(LitechessMonolithApplication.class);
-        // modules.verify();
+        ApplicationModules modules = ApplicationModules.of(LitechessMonolithApplication.class);
+		modules.detectViolations()
+        	.filter(v -> !v.getMessage().contains("Cycle detected"))
+        	.throwIfPresent();
+		modules.forEach(System.out::println);
 	}
 }
