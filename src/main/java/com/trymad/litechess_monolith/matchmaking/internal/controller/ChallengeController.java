@@ -10,6 +10,7 @@ import com.trymad.litechess_monolith.matchmaking.internal.service.ChallengeServi
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,11 @@ public class ChallengeController {
 	public ChallengeDTO getById(@PathVariable String id) {
 		System.out.println("TRY GET");
 		return challengeMapper.toDto(challengeService.get(id));
+	}
+
+	@GetMapping
+	public List<ChallengeDTO> getAll() {
+		return challengeMapper.toDto(challengeService.getAll());
 	}
 
 	@PostMapping

@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.chessparty.api.dto.TimeControlDTO;
+import com.trymad.litechess_monolith.infrastructure.event.EventPublisher;
 import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
 import com.trymad.litechess_monolith.matchmaking.internal.service.MatchmakingQueueService;
-import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 
 import lombok.RequiredArgsConstructor;

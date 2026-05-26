@@ -3,7 +3,7 @@ package com.trymad.litechess_monolith.userOnline.internal.listener.userEnterOnli
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.trymad.litechess_monolith.shared.event.EventListener;
+import com.trymad.litechess_monolith.infrastructure.event.EventListener;
 import com.trymad.litechess_monolith.userOnline.internal.service.OnlineUserService;
 import com.trymad.litechess_monolith.websocket.api.event.UserOnlineEvent;
 

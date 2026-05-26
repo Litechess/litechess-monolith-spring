@@ -9,8 +9,8 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
+import com.trymad.litechess_monolith.infrastructure.event.EventPublisher;
 import com.trymad.litechess_monolith.matchmaking.api.event.QueueLeaveEvent;
-import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.UserOfflineEvent;
 import com.trymad.litechess_monolith.websocket.api.event.UserOnlineEvent;
 

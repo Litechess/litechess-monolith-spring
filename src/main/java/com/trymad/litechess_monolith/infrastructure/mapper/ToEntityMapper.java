@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.shared.mapper;
+package com.trymad.litechess_monolith.infrastructure.mapper;
 
 import java.util.List;
 

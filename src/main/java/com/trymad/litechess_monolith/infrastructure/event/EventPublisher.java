@@ -1,4 +1,4 @@
-package com.trymad.litechess_monolith.shared.event;
+package com.trymad.litechess_monolith.infrastructure.event;
 
 public interface EventPublisher {
 

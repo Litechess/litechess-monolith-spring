@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 import com.trymad.litechess_monolith.chessparty.api.event.GameCreatedEvent;
 import com.trymad.litechess_monolith.chessparty.api.event.GameSource;
+import com.trymad.litechess_monolith.infrastructure.event.EventListener;
 import com.trymad.litechess_monolith.matchmaking.internal.service.ChallengeService;
-import com.trymad.litechess_monolith.shared.event.EventListener;
 
 import lombok.RequiredArgsConstructor;
 

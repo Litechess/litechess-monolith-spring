@@ -7,9 +7,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.stereotype.Component;
 
+import com.trymad.litechess_monolith.infrastructure.event.EventPublisher;
 import com.trymad.litechess_monolith.matchmaking.api.event.GameFindedEvent;
 import com.trymad.litechess_monolith.matchmaking.internal.service.MatchmakingQueueService;
-import com.trymad.litechess_monolith.shared.event.EventPublisher;
 import com.trymad.litechess_monolith.websocket.api.event.QueueRegistryEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,7 @@ public class SimpleMatchmakingQueueService implements MatchmakingQueueService {
 	private final EventPublisher eventPublisher;
 
 	@Override
+	@Deprecated
 	public void add(QueueRegistryEvent event) {
 		if(queue.contains(event.playerId())) {
 			return;
@@ -39,6 +40,7 @@ public class SimpleMatchmakingQueueService implements MatchmakingQueueService {
 	}
 
 	@Override
+	@Deprecated
 	public void leave(UUID playerId) {
 		if(!queue.contains(playerId)) {
 			return;
