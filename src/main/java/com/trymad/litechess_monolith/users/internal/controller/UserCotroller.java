@@ -1,5 +1,6 @@
 package com.trymad.litechess_monolith.users.internal.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,11 @@ public class UserCotroller {
 	@GetMapping("/{id}")
 	public UserInfoDTO getById(@PathVariable("id") UUID id) {
 		return userInfoService.getDto(id);
+	}
+
+	@GetMapping
+	public List<UserInfoDTO> getUsers() {
+		return userInfoService.getAll().stream().map(userInfoService::getDto).toList();
 	}
 
 	@PostMapping

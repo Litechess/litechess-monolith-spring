@@ -3,6 +3,7 @@ package com.trymad.litechess_monolith.users.internal.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -28,6 +29,10 @@ public class UserInfoService {
 	public UserInfo get(UUID id) {
 		return repository.findById(id).orElseThrow( () -> new RuntimeException("User " + id + " not found"));
 	}
+
+    public List<UserInfo> getAll() {
+        return repository.findAll();
+    }
 
 
 	@Transactional
