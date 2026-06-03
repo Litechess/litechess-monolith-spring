@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.trymad.litechess_monolith.infrastructure.event.EventPublisher;
 import com.trymad.litechess_monolith.matchmaking.api.dto.CreateChallengeDTO;
 import com.trymad.litechess_monolith.matchmaking.api.event.ChallengeAcceptedEvent;
+import com.trymad.litechess_monolith.matchmaking.api.event.ChallengeCreatedEvent;
 import com.trymad.litechess_monolith.matchmaking.api.model.ChallengeStatus;
 import com.trymad.litechess_monolith.matchmaking.internal.client.ChessPartyClient;
 import com.trymad.litechess_monolith.matchmaking.internal.mapper.ChallengeMapper;
@@ -35,10 +36,14 @@ public class ChallengeServiceImpl implements ChallengeService {
 
 	@Override
 	public Challenge createChallenge(CreateChallengeDTO dto) {
-		final Challenge challenge = mapper.toEntity(dto);
-		challenge.setStatus(ChallengeStatus.WAITING);
-		challenge.setId(chessPartyClient.getUniqueId());
-		return challengeRepository.save(challenge);
+		final Challenge challengeInfo = mapper.toEntity(dto);
+		challengeInfo.setStatus(ChallengeStatus.WAITING);
+		challengeInfo.setId(chessPartyClient.getUniqueId());
+		final Challenge challenge = challengeRepository.save(challengeInfo);
+		
+		publisher.publish(new ChallengeCreatedEvent(mapper.toDto(challenge)));
+
+		return challenge;
 	}
 
 	@Override

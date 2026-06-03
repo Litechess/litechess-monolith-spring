@@ -40,7 +40,7 @@ s3:
   region: us-east-1
   bucket: litechess
 
-logging:
-  level:
-    org.springframework.web.cors: TRACE
-    org.springframework.security: DEBUG
+# logging:
+#   level:
+#     org.springframework.web.cors: TRACE
+#     org.springframework.security: DEBUG

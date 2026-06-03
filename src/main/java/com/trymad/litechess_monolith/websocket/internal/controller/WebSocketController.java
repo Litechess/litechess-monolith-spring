@@ -29,6 +29,8 @@ public class WebSocketController {
     public static final String MOVE_TOPIC_TEMPLATE = "/topic/%s/moves";
     public static final String EVENT_TOPIC_TEMPLATE = "/topic/%s/events";
     public static final String CHAT_TOPIC_TEMPLATE = "/topic/%s/chat";
+    public static final String CHALLENGE_CREATED_TOPIC = "/topic/challenges/created";
+    public static final String CHALLENGE_ACCEPTED_TOPIC = "/topic/challenges/accepted";
 
     private final EventPublisher eventPublisher;
     private final Logger logger = Logger.getLogger("websocket");

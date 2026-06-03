@@ -3,5 +3,5 @@ spring:
     detection-strategy: com.trymad.litechess_monolith.CustomApplicationModuleDetectionStrategy
   profiles:
     active:
-    - prod
+    - dev
     

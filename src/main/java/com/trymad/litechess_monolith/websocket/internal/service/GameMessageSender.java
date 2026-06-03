@@ -17,6 +17,9 @@ import com.trymad.litechess_monolith.chessparty.api.event.MoveAcceptedEvent;
 import com.trymad.litechess_monolith.livegame.api.event.DeclineDrawEvent;
 import com.trymad.litechess_monolith.livegame.api.event.DrawPropositionEvent;
 import com.trymad.litechess_monolith.livegame.api.event.GameFinishEvent;
+import com.trymad.litechess_monolith.matchmaking.api.dto.ChallengeDTO;
+import com.trymad.litechess_monolith.matchmaking.api.event.ChallengeAcceptedEvent;
+import com.trymad.litechess_monolith.matchmaking.api.event.ChallengeCreatedEvent;
 import com.trymad.litechess_monolith.websocket.api.dto.GameCreatedDTO;
 import com.trymad.litechess_monolith.websocket.api.dto.MoveResponse;
 import com.trymad.litechess_monolith.websocket.internal.controller.WebSocketController;
@@ -82,6 +85,24 @@ public class GameMessageSender {
 			.build();
 			
 		final String dist = String.format(WebSocketController.EVENT_TOPIC_TEMPLATE, event.gameId());
+		messagingTemplate.convertAndSend(dist, message);
+	}
+
+	public void challengeCreated(ChallengeCreatedEvent event) {
+		final Message<ChallengeDTO> message = MessageBuilder
+			.withPayload(event.challengeDTO())
+			.build();
+		
+		final String dist = WebSocketController.CHALLENGE_CREATED_TOPIC;
+		messagingTemplate.convertAndSend(dist, message);
+	}
+
+	public void challengeAccepted(ChallengeAcceptedEvent event) {
+		final Message<ChallengeDTO> message = MessageBuilder
+			.withPayload(event.challengeDTO())
+			.build();
+		
+		final String dist = WebSocketController.CHALLENGE_ACCEPTED_TOPIC;
 		messagingTemplate.convertAndSend(dist, message);
 	}
 

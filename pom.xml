@@ -170,7 +170,7 @@
 						</exclude>
 					</excludes>
 					<image>
-						<name>trymad/litechess-modulith:1.2</name>
+						<name>trymad/litechess-modulith:1.21</name>
 						<bindings>
 							<binding>
 								${project.basedir}/bindings:/platform/bindings
